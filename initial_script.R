@@ -1,5 +1,68 @@
 library(tidyverse)
 
+population <- tibble(
+  test_name = rep(
+    "WAIS-IV",
+    13819500
+  ),
+  age = rep(
+    seq(18, 100, 1),
+    #555,
+    166500
+  ),
+  race = rep(
+    c(
+      "white",
+      "black",
+      "asian",
+      "latino",
+      "other"
+    ),
+    rep(
+      #9213
+      2763900
+    )
+  ),
+  standard_score = rep(
+    seq(45, 155, 1),
+    #415
+    124500
+  ),
+  raw_score = rep(
+    seq(
+    1, 300, 1
+  ),
+  46065
+  )
+) |>
+mutate(
+  mu = 100,
+  sd = 15
+)
+
+#10819500
+
+
+
+#83 ages
+# 5 races
+# 111 standard scores
+count(
+  population,
+  race
+)
+
+# standard, T, Z, and percentile
+
+# T 20 to 80 (full range 10-90)
+# Z -3 to 3 (full range 3.49-3.49)
+# standard 55 to 145 (full range 45-155)
+# scaled 1 to 19
+# percentile .13 to 99.87 (full range .01-99.99)
+
+
+
+# z-table calculations
 z_scores <- tibble(
     z_score = seq(0, 3.49, .01),
     area = c(
@@ -120,12 +183,39 @@ z_table <- z_table |>
     -condition
   )
 
-standard <- rnorm(1000, mean = 100, sd = 10)
-standard
-
-ggplot(data = NULL) + 
-geom_histogram( 
-  aes(
-    standard
+z_table <- z_table |>
+  relocate(
+    area, .after = z_value
+  ) |>
+  mutate(
+    percentile = area*100
   )
+
+(120 - population$mu)/population$sigma
+
+z_table |>
+  filter(z_value == 1.33)
+
+z_calc <- function(
+  test_name,
+  score
+){
+  test <- population |> filter(test_name == test_name)
+
+  z <- (score - test$mu)/test$sigma
+  z <- round(z, 2)
+
+  output <- z_table |> filter(z_value == z)
+
+  print(paste0("The client's/patient's percentile ranking is ", output$percentile))
+}
+
+map(
+  population,
+  table
+)
+
+z_calc(
+  test_name = "WAIS-IV",
+  score = 120
 )
