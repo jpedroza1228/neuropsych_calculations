@@ -1,5 +1,54 @@
 library(tidyverse)
 
+tibble(
+  `Test Name` = c(
+    "Beck Anxiety Inventory",
+    "Beck Depression Inventory",
+    "Boston Naming Test",
+    "Brief Visuospatial Memory Test - Revised",
+    "California Verbal Learning Test - II",
+    "Conners' Adult ADHD Rating Scales - Self Report: Long Version",
+    "Conners' Continuous Performance Test - 3rd Edition",
+    "Controlled Oral Word Association Test",
+    "Minnesota Multiphasic Personality Inventory - 2 Restructured Form",
+    "Rey-Osterrieth Complex Figure Test",
+    "Stroop - Word Naming",
+    "Stroop - Color Naming",
+    "Stroop - Colored Word Naming",
+    "Test of Premorbid Function",
+    "Trailmaking Test A",
+    "Trailmaking Test B",
+    "Wechsler Adult Intelligence Scale - 4th Edition",
+    "Wechsler Memory Scale - 4th Edition",
+    "Wisconsin Card Sorting Test"
+  ),
+  `Test Abbreviation` = c(
+    "bai",
+    "bdi_ii",
+    "bnt",
+    "bvmt_r",
+    "cvlt_ii",
+    "caars_s_l",
+    "cpt_3",
+    "fas_animals",
+    "mmpi_2_rf",
+    "rocft",
+    "stroop_word",
+    "stroop_color",
+    "stroop_color_word",
+    "topf",
+    "trailmaking_a",
+    "trailmaking_b",
+    "wais_iv",
+    "wms_iv",
+    "wcst_64"
+  )
+) |>
+  flextable::flextable() |>
+  flextable::set_caption(
+    "List of Available Neuropsychological Assessments & Abbreviations"
+  )
+
 population <- tibble(
   test_name = rep(
     "WAIS-IV",
