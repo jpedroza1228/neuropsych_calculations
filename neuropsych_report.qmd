@@ -1,0 +1,38 @@
+---
+title: "Neuropsychological Report"
+author: "Kaitlin M. O.Brien, PhD"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    code-fold: true
+---
+
+```{r, include = FALSE}
+library(tidyverse)
+
+patient <- ""
+testing_date <- ""
+report_date <- Sys.Date()
+gender <- ""
+age <- 
+dob <- ""
+referral_source <- ""
+reason_4_referral <- ""
+
+test_table <- function(
+  test_name,
+  
+){
+  
+}
+```
+
+```{r, eval = TRUE, echo = FALSE}
+tibble() |>
+  flextable::flextable()
+```
+
+
+```{r, eval = TRUE, echo = FALSE}
+
+```
