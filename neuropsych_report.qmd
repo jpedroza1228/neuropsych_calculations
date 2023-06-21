@@ -8,7 +8,7 @@ format:
 ---
 
 ```{r test names and abbreviations, include = FALSE}
-list_of_tests <- tibble(
+list_of_tests <- tibble::tibble(
   actual_test = c(
     "Beck Anxiety Inventory",
     "Beck Depression Inventory",
@@ -55,8 +55,8 @@ list_of_tests <- tibble(
 ```
 
 ```{r normative populations, echo = FALSE, eval = TRUE}
-population <-tibble(
-  test_name = list_of_tests$test_name,
+population <- tibble::tibble(
+  test_name = list_of_tests$test_name
   #mu = c(
   #  100
   #),
@@ -65,10 +65,10 @@ population <-tibble(
   #)
 )
 
-heaton_population <- tibble(
-  race = "Black/African American",
-  test_name = c()
-)
+# heaton_population <- tibble(
+#   race = "Black/African American",
+#   test_name = c()
+# )
 ```
 
 ```{r packages and functions, include = FALSE}
@@ -226,43 +226,88 @@ z_table <- z_table |>
 ```
 
 ```{r complete text boxes, include = FALSE}
-library(tidyverse)
 
-patient_name <- ""
-eval_date <- ""
+patient_name <- "Jon Pedroza"
+eval_date <- "12/25/2023"
+re_test <- FALSE # type TRUE or FALSE
+past_eval_date <- ""
+re_test_statement <- if(re_test == FALSE){print("")}else{print(glue::glue("This assessment is a re-evaluation of a previous neuropsychological evluation that was taken on {past_eval_date}"))}
 report_date <- Sys.Date()
-mr_or_ms <- ""
-age <- 
-dob <- ""
+# mr_ms <- c("Mr", "Ms", "Mrs")
+mr_ms <- "Mr"
+man_woman <- "man" #options: man/woman
+his_her <- if(man_woman == "man"){print("his")} else{print("her")}
+age <- "31"
+dob <- "12/28/1991" #Month/Day/Year (e.g., 12/28/1991)
+handed <- "right" #options: right/left/ambidextrous
+marital_status <- "married" #options: single, married, widowed
+race_ethnicity <- "Mexican"
+bilingual <- FALSE # type TRUE or FALSE
+years_education <- "12"
+referring_dr <- "Dr. Sam I Am"
+accompany <- TRUE #type TRUE or FALSE
+accompany_relationship <- "spouse" #options: parent, spouse, partneretc.
+accompany_name <- "Not Jon"
+if_accompany <- if(accompany == TRUE){print(glue::glue("and the patient's {accompany_relationship}, {accompany_name}, "))} else{print("")}
+major_med_issues <- "stroke" # List all medical issues relevant to patient's current presentation
+decline_status <- "progressive" # options: progressive, stable, longstanding, stepwise, acute
+domains <- "attention and cognition" # list all domains of problems
+decline_in_domain_years <- "20" # number of years since onset of problem
+
+# examiners
+examiner <- TRUE
+examiner_name <- "Jonathan A. Pedroza, PhD"
+examiner2 <- FALSE
+examiner2_name <- "" #keep empty if alone
+examiner3 <- FALSE
+examiner3_name <- ""
 
 # TOPF score
-raw_topf <- 
-standard_topf <- 
+raw_topf <- ""
+standard_topf <- ""
 
 # WAIS-IV score
-raw_wais_iv <- 120
-standard_wais_iv <- 
+raw_wais_iv <- ""
+standard_wais_iv <- ""
 
 ```
 
 **Name**: `r patient_name`
+
 **DOB**: `r dob`
+
 **DATE OF EVALUATION**: `r eval_date`
-**Examiner(s)**
+
+`r if(examiner2 == FALSE & examiner3 == FALSE){
+  paste0("EXAMINER: ", print(examiner_name))
+} else if(examiner3 == FALSE & examiner2 == TRUE){
+  paste0("EXAMINERS: ", print(examiner_name), " and ", print(examiner2_name))
+} else {
+  paste0("EXAMINERS: ", print(examiner_name), ", ", print(examiner2_name), ", and ", print(examiner3_name))
+}
+`
+
+> The following neuropsychological assessment report is CONFIDENTIAL and is intended as a communication between professionals.  In its present form it is not to be released to the patient, the patient’s family or other representative, or any other practitioner without expressed written consent of the patient and the examiner. All requests for copies of this report should be sent to the examiner. The test data herein can only be interpreted by appropriately trained healthcare providers; should questions arise about the contents of this report, please contact the neuropsychologist.
+
+REFERRAL SOURCE: 
+
+`r mr_ms` `r patient_name` is a `r age`-year-old, `r handed`-handed, `r marital_status`, `r race_ethnicity`, `r if(bilingual == TRUE){print("bilingual ")} else{print(" ")}``r man_woman` with `r years_education` years of education. `r mr_ms` `r patient_name` was referred for a neuropsychological evaluation by `r referring_dr`. The purpose of the assessment was to evaluate `r his_her` current cognitive functioning for `r his_her` clinical care, including aiding with diagnostic clarification and treatment planning; as such, this evluation maBACKGROUND AND HISTORY:
+History of Presenting Complaints: Historical information was obtained from a thorough clinical interview with the patient [and the patient’s [relationship to patient], NAME], and review of available medical records.y not be appropriate for other purposes (i.e., legal or forensic purposes).
+
+BACKGROUND AND HISTORY:
+
+History of presenting complaints: Historical information was obtained from a thorough clinical interview with the patient `r if_accompany` and review of available medical records.
+
+The patient, whose medical history is significant for `r major_med_issues`, presented with subjective complaints of gradually `r decline_status` declines in `r domains` with an insidious onset approximately `r decline_in_domain_years` years ago.
+
 
 ```{r, eval = FALSE, echo = FALSE}
-tibble() |>
-  flextable::flextable()
-```
-
-
-```{r, eval = TRUE, echo = FALSE}
 
 ```
 
 # NEUROPSYCHOLOGICAL SUMMARY SCORE SHEET
 
-```{r, eval = TRUE, echo = TRUE}
+```{r, eval = FALSE, echo = FALSE}
 z_calc(
   test_name = "topf",
   score = raw_topf
