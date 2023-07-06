@@ -9,6 +9,7 @@ format:
 
 ```{r test names and abbreviations, include = FALSE}
 list_of_tests <- tibble::tibble(
+  number_for_test_administered = seq(1, 19, 1),
   actual_test = c(
     "Beck Anxiety Inventory",
     "Beck Depression Inventory",
@@ -52,6 +53,9 @@ list_of_tests <- tibble::tibble(
     "wcst_64"
   )
 )
+
+
+list_of_tests |> flextable::flextable()
 ```
 
 ```{r normative populations, echo = FALSE, eval = TRUE}
@@ -235,8 +239,9 @@ re_test_statement <- if(re_test == FALSE){print("")}else{print(glue::glue("This 
 report_date <- Sys.Date()
 # mr_ms <- c("Mr", "Ms", "Mrs")
 mr_ms <- "Mr"
-man_woman <- "man" #options: man/woman
-his_her <- if(man_woman == "man"){print("his")} else{print("her")}
+man_woman <- "male" #options: male/female
+his_her <- if(man_woman == "male"){print("his")} else{print("her")}
+he_she <- if(man_woman == "male"){print("he")} else{print("she")}
 age <- "31"
 dob <- "12/28/1991" #Month/Day/Year (e.g., 12/28/1991)
 handed <- "right" #options: right/left/ambidextrous
@@ -246,17 +251,18 @@ bilingual <- FALSE # type TRUE or FALSE
 years_education <- "12"
 referring_dr <- "Dr. Sam I Am"
 accompany <- TRUE #type TRUE or FALSE
-accompany_relationship <- "spouse" #options: parent, spouse, partneretc.
+accompany_relationship <- "spouse" #options: parent, spouse, partner etc.
 accompany_name <- "Not Jon"
 if_accompany <- if(accompany == TRUE){print(glue::glue("and the patient's {accompany_relationship}, {accompany_name}, "))} else{print("")}
 major_med_issues <- "stroke" # List all medical issues relevant to patient's current presentation
 decline_status <- "progressive" # options: progressive, stable, longstanding, stepwise, acute
 domains <- "attention and cognition" # list all domains of problems
 decline_in_domain_years <- "20" # number of years since onset of problem
+major_domain <- "short-term memory"
 
 # examiners
 examiner <- TRUE
-examiner_name <- "Jonathan A. Pedroza, PhD"
+examiner_name <- "Kaitlin M. O'Brien, PhD"
 examiner2 <- FALSE
 examiner2_name <- "" #keep empty if alone
 examiner3 <- FALSE
@@ -269,6 +275,8 @@ standard_topf <- ""
 # WAIS-IV score
 raw_wais_iv <- ""
 standard_wais_iv <- ""
+
+diagnosis_etiology <- "ADHD"
 
 ```
 
@@ -291,7 +299,10 @@ standard_wais_iv <- ""
 
 REFERRAL SOURCE: 
 
-`r mr_ms` `r patient_name` is a `r age`-year-old, `r handed`-handed, `r marital_status`, `r race_ethnicity`, `r if(bilingual == TRUE){print("bilingual ")} else{print(" ")}``r man_woman` with `r years_education` years of education. `r mr_ms` `r patient_name` was referred for a neuropsychological evaluation by `r referring_dr`. The purpose of the assessment was to evaluate `r his_her` current cognitive functioning for `r his_her` clinical care, including aiding with diagnostic clarification and treatment planning; as such, this evluation maBACKGROUND AND HISTORY:
+`r mr_ms` `r patient_name` is a `r age`-year-old, `r handed`-handed, `r marital_status`, `r race_ethnicity`, `r if(bilingual == TRUE){print("bilingual ")} else{print(" ")}``r man_woman` with `r years_education` years of education. `r mr_ms` `r patient_name` was referred for a neuropsychological evaluation by `r referring_dr`. The purpose of the assessment was to evaluate `r his_her` current cognitive functioning for `r his_her` clinical care, including aiding with diagnostic clarification and treatment planning; as such, this evaluation may not be appropriate for other purposes (i.e., legal or forensic purposes). 
+
+BACKGROUND AND HISTORY:
+
 History of Presenting Complaints: Historical information was obtained from a thorough clinical interview with the patient [and the patient’s [relationship to patient], NAME], and review of available medical records.y not be appropriate for other purposes (i.e., legal or forensic purposes).
 
 BACKGROUND AND HISTORY:
@@ -300,10 +311,151 @@ History of presenting complaints: Historical information was obtained from a tho
 
 The patient, whose medical history is significant for `r major_med_issues`, presented with subjective complaints of gradually `r decline_status` declines in `r domains` with an insidious onset approximately `r decline_in_domain_years` years ago.
 
+`r mr_ms` `r patient_name` reported significant difficulties in `r major_domain` characterized by...
 
-```{r, eval = FALSE, echo = FALSE}
-
+```{r}
+cog_issues <- "attention and concentration"
+more_cog_issues <- "mental clarity or alterness"
 ```
+
+
+`r he_she` denied declines in `r cog_issues`. `r he_she` denied fluctuations in `r more_cog_issues`... **Include additional information about the patient's processing speed, expressive language/word-finding, visuospatial ability, and executive functioning here.**
+
+With regard to mood, `r mr_ms` `r patient_name` endorsed 
+
+**FROM TEMPLATE**
+
+With regard to mood, Ms. XX endorsed…. … (symptoms of depression including feelings of dysphoria, hopelessness, anhedonia, suicidal ideation, etc; can also comment on changes in energy, sleep, eating,). OR With regard to mood, Ms. XX denied symptoms of depression, anxiety, mania, hallucinations, delusions, and suicidal or homicidal ideation. 
+She reported obtaining XX hours of sleep per night. She denied difficulty with sleep initiation or maintenance. She denied symptoms of obstructive sleep apnea or REM sleep behavior disorder.
+
+Regarding motor and sensory functioning, she denied a history of gait disturbance, recent falls, imbalance, tremor, reduced coordination, dysphagia, urinary incontinence, or neuropathy. She denied diplopia or blurred vision. She denied declines in olfaction/gustation. On the day of the evaluation, she rated her pain as a “[insert number]” on a 0-10 severity scale. 
+
+Telephone Interview: The patient’s XX was contacted to provide additional information regarding her XX functioning. DESCRIBE INFORMATION OBTAINED… REMOVE IF NOT APPLICABLE.  
+
+Baseline Neuropsychological Evaluation: Baseline neuropsychological exam was conducted in our clinic on XX/XX/20XX. Results of that evaluation indicated…Give a thorough description of impairments, strengths, weaknesses, etc.  The patient was found to meet DSM-5 diagnostic criteria for Mild/Major Neurocognitive Disorder. The patient’s clinical presentation and neuropsychological performance were thought to be most consistent with the early stages of Alzheimer’s disease, with consideration given to a secondary vascular contribution.  REMOVE IF NOT APPLICABLE
+
+Current Functioning: The patient resides with… in [city], California. She works full-time/is fully retired. Ms. * remains fully independent in basic and instrumental ADLs – Include any relevant information about the following:
+Driving
+Medications 
+Managing appointments/calendar
+Finances
+Other IADLs to include if we have info– shopping, cooking, basic household chores, basic home repairs 
+
+Medical History: The patient’s medical history is significant for [list all]. [Describe any TBIs or other neurological events in detail if not already described in background]. She denied a history of traumatic brain injury, seizure, stroke, toxic exposure, or anoxic events (delete if sleep apnea).  Surgical history is notable for…. 
+
+Current Medications: Per medical records [or per patient report], the patient is prescribed XX (XXmg daily), XX (XXmcg nightly), and XX (XXmg prn). 
+
+Family History: [Include info on biological relatives: Mother, father, siblings, children]
+Family medical history is significant for…. Family psychiatric history is notable for….
+
+Neuroimaging Studies/Laboratory Studies: 
+Brain FDG-PET/CT on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
+
+MRI of the brain with volumetric analysis on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
+
+An EEG completed on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
+
+A polysomnogram completed on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
+
+[List all neuroimaging in reverse chronological order (most recent first). Do not include imaging of the spine unless especially relevant] FDG-PET, MRI, CT, EEGs, Sleep studies.
+
+[Include any relevant abnormal labs, such as A1c, Vitamin B12, etc]
+
+Genetic testing on [date] identified an ApoE e#/e# genotype.
+
+[Include any CSF/Admark or other genetic studies if available]
+
+Psychiatric History and Substance Use: The patient’s psychiatric history is remarkable for XXX [Describe current and past treatment, including psychotherapy and psychotropic medication in general.] She denied a history of suicidal ideation or psychiatric hospitalization. 
+
+Ms. * denied a history of nicotine/tobacco use, alcohol abuse, or recreational drug use.] <OR> Ms. XX reported consuming alcohol XX times per XX, no more than XX drinks of XX per instance. She reported a XX-year history of cigarette smoking XX years ago. She reported a history of using [marijuana, cocaine, amphetamine, hallucinogen, prescription drug; include frequency].
+
+Developmental, Educational, Social and Occupational History: Ms. * was born and raised in [city, state/country] as the [eldest/second/third] of [#] children. She speaks [English] as her native language. [If not English then describe when/how patient learned English] There is no known history of developmental delays, learning disorders, or attentional/behavioral disorders. She earned a high school diploma and completed [education and degrees]. She was employed as a [job title and description] and retired in [year]. She is [widowed/married/divorced/separated [and lives in [city] with his spouse of [#] years. She has [#] children, ages [#] who live in , XXX and XX grandchildren. 
+
+BEHAVIORAL OBSERVATIONS: 
+Ms. * arrived to the telehealth clinical interview and on-site testing appointments punctually, and was unaccompanied throughout both visits. She presented as casually dressed and appropriately groomed. She wore a face mask to the on-site visit due to the current COVID-19 pandemic. She was alert and fully oriented. She made good eye contact and appropriately followed social cues. Hearing and vision appeared adequate for testing. Speech was of normal rate, tone, volume, and prosody. Her insight and judgement appeared intact. There was no evidence of expressive or receptive language difficulties. Thinking was observed to be logical and sequential, without any evidence of delusion, hallucination, perseveration, or disorganization. Affect was euthymic, which was congruent with stated mood. During testing, Ms. * did not have difficulty understanding or retaining task demands. She worked consistently for the duration of testing, without significant distractibility and impulsivity. She responded appropriately to the challenges inherent to the cognitive tasks, with good tolerance for frustration. Overall, she was cooperative with the evaluation and did not demonstrate behaviors to raise concerns of poor effort.
+
+ [If there are concerns about validity problems due to linguistic or cultural factors. REMOVE IF NOT APPLICABLE]
+It is important to acknowledge the possible contribution of linguistic, ethnic and cultural factors to the test results. Although Ms. * speaks fluent English, the normative data used in the interpretation of performance were obtained from a predominantly White, monolingual, North American population. The dissimilarities between the patient’s background and the characteristics of the normative/standardization samples and non-native speakers may result in underestimation of her true abilities particularly on tests that involve items with specific cultural references. Such ethnocultural and linguistic factors present potential limitations to accurate neuropsychological inference and should be considered when interpreting the obtained test data.
+
+**END OF TEMPLATE**
+
+TESTS ADMINISTERED:
+
+`r list_of_tests$actual_test[1]` (`r list_of_tests$test_name[1]`)
+`r list_of_tests$actual_test[2]` (`r list_of_tests$test_name[2]`)
+`r list_of_tests$actual_test[3]` (`r list_of_tests$test_name[3]`)
+`r list_of_tests$actual_test[4]` (`r list_of_tests$test_name[4]`)
+`r list_of_tests$actual_test[5]` (`r list_of_tests$test_name[5]`)
+`r list_of_tests$actual_test[6]` (`r list_of_tests$test_name[6]`)
+`r list_of_tests$actual_test[7]` (`r list_of_tests$test_name[7]`)
+`r list_of_tests$actual_test[8]` (`r list_of_tests$test_name[8]`)
+`r list_of_tests$actual_test[9]` (`r list_of_tests$test_name[9]`)
+`r list_of_tests$actual_test[10]` (`r list_of_tests$test_name[10]`)
+
+**FROM TEMPLATE**
+
+SUMMARY & IMPRESSIONS: 
+Ms. * is a [#]-year-old, [right/left/ambidextrous]-handed, [marital status], [ethnicity], [bilingual status if applicable] woman with [#] years of education. The patient presented with subjective complaints of [gradually progressive] declines/difficulties in [cognitive domains] with an insidious [or abrupt, gradual, etc] onset approximately [#] years ago. Her medical history is remarkable for [List salient medical factors] [Neuroimaging summary] [Summary of Labs if available] [One sentence of functional abilities (i.e., preserved, declines, safety risks?)].
+
+Consistent with behavioral observations, performance validity testing suggested that the following results are a valid estimate of the patient’s current cognitive functioning. [If evidence of poor effort - The patient performed mildly below expectation on a single embedded validity measure (CVLT FC = 13/16), suggesting the possibility of variable test engagement. As a result, it is possible that the test results may slightly underestimate her neurocognitive ability in some areas.] Intellectual functions assessed by administered subtests of the WAIS-IV indicated overall average general intelligence (FSIQ=xx, xx percentile). Specifically, verbal reasoning and acquired knowledge skills were average (VCI = XXX, XX percentile) and nonverbal perceptual reasoning skills were high average (PRI = XXX, XX percentile). Based on a single-word reading test, it is estimated that her baseline intellectual functioning was in the [low average, average, high average, superior] range. 
+
+The patient’s neuropsychological profile was characterized by XXX. Simple auditory attention was XX, while working memory was XX. Information processing speed was within/below expectation for her age. Frontal “executive” abilities varied/were intact/emerged as an area of XX within her profile. Verbal and non-verbal abstract reasoning were XX. Set-shifting was XX, while prepotent response inhibition was XX. Her approach to copy a complex geometric figure was characterized by poor/fair/good organization and planning. Performance on a novel problem-solving task was intact with minimal evidence of perseveration. Verbal fluency to target letter categories was XX. Semantic verbal fluency was XX. Confrontation naming was XX with mild/moderate benefit from the provision of phonemic cues observed. Visual integration was XX. Memory processing was intact/variable. Encoding, retention, and recognition of contextual verbal information (i.e., stories) XXX. Encoding of non-contextual verbal information (i.e., word lists) was XX, while retention and retrieval of this information was XX. Encoding of simple line drawings was XX, while retention and recognition of this information was XX. The patient’s ability to replicate a complex geometric figure following an immediate-delay was XX and was XX following a long-delay. Recognition of individual elements of this complex figure was XX. She reported XX depression and XX anxiety on self-report measures of mood/affect.    
+
+***[If underwent previous evaluation] Compared to the previous neuropsychological assessment in XX of XX, Ms. * demonstrated XXX. Mild to clinically significant declines were observed in XXX. Conversely, significant improvements were observed in XXX. In general, depression and anxiety remain stable at XXX levels.
+
+The patient currently meets DSM-5 diagnostic criteria for Mild/Major Neurocognitive Disorder/ as she is demonstrating objective relative weaknesses and deficits in multiple cognitive domains in the context of reportedly preserved functional abilities. The patient also meets DSM-5 diagnostic criteria for XX (e.g., an Unspecified Depressive Disorder (mild).
+ [or]
+The patient does not meet DSM-5 diagnostic criteria for a neurocognitive disorder at this time. [or] While Ms. * is exhibiting declines in some areas of neuropsychological functioning, she does not meet criteria for a neurocognitive disorder at this time. [add diagnoses of MDD or any other psychiatric condition here]
+
+[or]
+
+The patient meets DSM-5 diagnostic criteria for Attention-Deficit/Hyperactivity Disorder, [combined presentation, predominantly inattentive type, etc] (F90.2). The patient also meets DSM-5 diagnostic criteria for….
+
+[Discuss etiological considerations] 
+The etiology for the patient’s pattern of weaknesses/deficits and clinical presentation is most consistent with XXX / is likely multifactorial with contribution from XX, XX, and XX….
+[OR]
+
+The most proximate factors accounting for her subjective experience of cognitive difficulties during daily functioning is suspected to be ….
+
+[OR]
+
+Taken together, the patient’s cognitive profile, which was suggestive of weaknesses in attention and frontal systems, combined with her self-reported longstanding history of attentional difficulties and related functional impairment is consistent with a diagnosis of Attention-Deficit/Hyperactivity Disorder, predominately inattentive presentation.
+
+[OR]
+
+Overall, the patient presents with a pattern of well-preserved neurocognitive functioning commensurate with premorbid estimates. The current results are not suggestive of focal cortical dysfunction, amnestic memory disturbance, or the early stages of a neurodegenerative process.
+
+
+`r if(diagnosis_etiology == "ADHD"){
+Taken together, the patient’s cognitive profile, which was suggestive of weaknesses in attention and frontal systems, combined with her self-reported longstanding history of attentional difficulties and related negative impact on daily activities (i.e., academic and work performance) is consistent with a diagnosis of Attention-Deficit/Hyperactivity Disorder, predominately inattentive presentation. Notably, the patient’s cognitive weaknesses were most salient on tasks integrating both basic attention and other layers of cognitive demand (i.e., processing speed, executive function). As such, Ms. *’s attentional difficulties are likely to be most apparent with greater environmental demand and complexity. It is also important to note that the demands of her daily environment likely far outweigh that of the current testing conditions (i.e., quiet, highly structured, and free of distractions) meaning that the current results may not fully capture the extend of her cognitive difficulties during day-to-day functioning.
+
+Many of Ms. *’s subjective cognitive complaints and objective test findings are consistent with her reported history of ADHD; however, her existing weaknesses in attention are likely exacerbated by both the independent and compounding effects of several other factors, including untreated OSA and poor sleep quality, moderate to severe chronic pain, depression and anxiety, and history of TBI.
+
+Mood – The most proximate factors accounting for her subjective experience of cognitive difficulties during daily functioning is suspected to be her current levels of depression and anxiety, as well as occasional sleep disturbance/insomnia. In the context of ongoing mood disturbance, mild fronto-subcortical dysfunction would be expected, and can often manifest in reduced cognitive efficiency and disruptions in executive control during daily life. As such, the patient is strongly encouraged to continue pharmacological treatment for mood symptoms in addition to resuming psychotherapy, as reductions in psychiatric distress will likely lead to improvements in overall functioning, including cognition. 
+
+[if somatic profile and abuse history, particularly if supported by MMPI, could add something like: Given the patient’s report of childhood trauma and chronic stress, she may also be prone to experiencing somatic symptoms in times of distress, which may further account for some of her experienced cognitive difficulties and other physiological symptoms.]
+
+The patient’s current levels of anxiety and stress may also exacerbate areas of cognitive weakness. The patient may benefit from resuming mental health treatment, including participation in individual psychotherapy, as this may lead to improvements in overall well-being and cognitive functioning. 
+
+She also reported mildly depressed mood which can attenuate cognitive function. While this would not account for the severity or overall pattern of Ms. *’s cognitive difficulties, this should still be considered an important area of treatment focus for optimizing functioning and quality of life.
+
+Ms. *'s current level of depression may have negatively affected her performance on the current assessment, but alone would not account for the pattern of cognitive declines observed. 
+
+There is no evidence of a contributory psychiatric condition. 
+
+Alzheimer’s disease - The pattern of low scores in language/memory/visuospatial ability, with subjective reports of insidious progressive declines in memory for # years, raises some concern for the very early stages of a neurodegenerative condition, with Alzheimer’s disease being a primary etiological consideration. This is also supported by neuroimaging findings indicating XX and the patient’s known ApoE genotype.
+
+Vascular etiology – The pattern of weaknesses in attention, processing speed, and executive functioning combined with medical history significant for multiple cerebrovascular risk factors and neuroimaging studies showing moderate chronic small vessel ischemic changes, suggests a primary vascular etiology. [OR] Given the absence of changes in attention, processing speed, and executive function with only stable, mild ischemic changes seen on MRI, there is not likely a significant vascular contribution at this time. 
+
+AD plus vascular - Taken together, the etiology for Ms. *’s cognitive decline may be best characterized as a “probable mixed dementia” with likely contribution from both AD and vascular burden.
+
+Obstructive sleep apnea (OSA) – The patient’s currently untreated OSA is a primary factor suspected to be adversely affecting cognitive functioning. Reduced oxygen saturation levels due to apneic episodes during sleep may be disrupting optimal sleep architecture and resulting in cognitive difficulties during daily functioning, likely to manifest as executive dysfunction and short-term memory difficulties.
+} else(if diagnosis_etiology == "Primary Progressive Aphasia"){
+
+}
+`
+
+**END OF TEMPLATE**
 
 # NEUROPSYCHOLOGICAL SUMMARY SCORE SHEET
 
