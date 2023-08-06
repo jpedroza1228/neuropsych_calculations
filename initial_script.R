@@ -43,8 +43,8 @@ tibble(
     "wms_iv",
     "wcst_64"
   )
-) |>
-  flextable::flextable() |>
+) %>% 
+  flextable::flextable() %>% 
   flextable::set_caption(
     "List of Available Neuropsychological Assessments & Abbreviations"
   )
@@ -52,54 +52,18 @@ tibble(
 population <- tibble(
   test_name = rep(
     "WAIS-IV",
-    13819500
-  ),
-  age = rep(
-    seq(18, 100, 1),
-    #555,
-    166500
-  ),
-  race = rep(
-    c(
-      "white",
-      "black",
-      "asian",
-      "latino",
-      "other"
-    ),
-    rep(
-      #9213
-      2763900
-    )
+    111
   ),
   standard_score = rep(
     seq(45, 155, 1),
-    #415
-    124500
-  ),
-  raw_score = rep(
-    seq(
-    1, 300, 1
-  ),
-  46065
+   1 
   )
-) |>
+  ) %>% 
 mutate(
-  mu = 100,
-  sd = 15
+ mu = 100,
+ sd = 15
 )
 
-#10819500
-
-
-
-#83 ages
-# 5 races
-# 111 standard scores
-count(
-  population,
-  race
-)
 
 # standard, T, Z, and percentile
 
@@ -191,31 +155,31 @@ z_scores <- tibble(
     )
 )
 
-z_table <- z_scores |> 
+z_table <- z_scores %>% 
   pivot_longer(
       cols = c(area, area_neg),
       names_to = "z_values",
       values_to = "area"
-  ) |>
+  ) %>%
   pivot_longer(
       cols = c(z_score, z_score_neg), 
       names_to = "z_scores", 
       values_to = "actual_z"
-  ) |>
+  ) %>%
   select(
     -c(
       z_values,
       z_scores
     )
-  ) |>
+  ) %>%
   rename(
     z_value = actual_z
-  ) |>
+  ) %>%
   relocate(
     area, 2
   )
 
-z_table <- z_table |> 
+z_table <- z_table %>% 
   mutate(
     condition = case_when(
       (z_value < 0 & area > .5) ~ "drop",
@@ -224,45 +188,41 @@ z_table <- z_table |>
       (z_value > 0 & area > .5) ~ "keep",
       (z_value == 0 & area == .5) ~ "keep" 
     )
-  ) |>
+  ) %>%
   filter(
     condition != "drop"
-    ) |>
+    ) %>%
   select(
     -condition
   )
 
-z_table <- z_table |>
+z_table <- z_table %>%
   relocate(
     area, .after = z_value
-  ) |>
+  ) %>%
   mutate(
     percentile = area*100
   )
 
 (120 - population$mu)/population$sigma
 
-z_table |>
+z_table %>%
   filter(z_value == 1.33)
 
 z_calc <- function(
   test_name,
   score
 ){
-  test <- population |> filter(test_name == test_name)
+  test <- population %>% filter(test_name == test_name)
 
   z <- (score - test$mu)/test$sigma
   z <- round(z, 2)
 
-  output <- z_table |> filter(z_value == z)
+  output <- z_table %>% filter(z_value == z)
 
   print(paste0("The client's/patient's percentile ranking is ", output$percentile))
 }
 
-map(
-  population,
-  table
-)
 
 z_calc(
   test_name = "WAIS-IV",
