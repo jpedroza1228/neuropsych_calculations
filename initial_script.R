@@ -1,7 +1,9 @@
 library(tidyverse)
+library(bayestestR)
+library(gt)
 
-tibble(
-  `Test Name` = c(
+tests <-tibble(
+  Test = c(
     "Beck Anxiety Inventory",
     "Beck Depression Inventory",
     "Boston Naming Test",
@@ -22,7 +24,7 @@ tibble(
     "Wechsler Memory Scale - 4th Edition",
     "Wisconsin Card Sorting Test"
   ),
-  `Test Abbreviation` = c(
+  Abbreviation = c(
     "bai",
     "bdi_ii",
     "bnt",
@@ -41,38 +43,51 @@ tibble(
     "trailmaking_b",
     "wais_iv",
     "wms_iv",
-    "wcst_64"
+    "wcst"
   )
-) %>% 
-  flextable::flextable() %>% 
-  flextable::set_caption(
+)
+
+tests |>
+  gt() |>
+  tab_header(
     "List of Available Neuropsychological Assessments & Abbreviations"
   )
 
-population <- tibble(
-  test_name = rep(
-    "WAIS-IV",
-    111
-  ),
-  standard_score = rep(
-    seq(45, 155, 1),
-   1 
-  )
-  ) %>% 
-mutate(
- mu = 100,
- sd = 15
+
+norms <- tibble::tibble(
+  name = tests$Abbreviation,
+  full_name = tests$Test,
+  range_low_raw = c(0, rep(NA_real_, 15), 1, rep(NA_real_, 2)),
+  range_high_raw = c(63, rep(NA_real_, 15), 300, rep(NA_real_, 2)),
+  range_low_standard = c(rep(NA_real_, 16), 45, rep(NA_real_, 2)),
+  range_high_standard = c(rep(NA_real_, 16), 155, rep(NA_real_, 2)),
+  avg = c(9.89, rep(NA_real_, 18)),
+  sd = c(8.76, rep(NA_real_, 18)),
+  clinical_avg = c(rep(NA_real_, 16), 100, rep(NA_real_, 2)),
+  clinical_sd = c(rep(NA_real_, 16), 15, rep(NA_real_, 2))
 )
 
+norms_add <- norms |>
+  mutate(
+    male_avg_nonclinical = case_when(
+      name == "bai" ~ 8.1,
+      TRUE  ~ NA_real_
+    ),
+    male_sd_nonclinical = case_when(
+      name == "bai" ~ 7.96,
+      TRUE ~ NA_real_
+    ),
+    female_avg_nonclinical = case_when(
+      name == "bai" ~ 11.09,
+      TRUE  ~ NA_real_
+    ),
+    female_sd_nonclinical = case_when(
+      name == "bai" ~ 9.13,
+      TRUE ~ NA_real_
+    )
+  )
 
-# standard, T, Z, and percentile
-
-# T 20 to 80 (full range 10-90)
-# Z -3 to 3 (full range 3.49-3.49)
-# standard 55 to 145 (full range 45-155)
-# scaled 1 to 19
-# percentile .13 to 99.87 (full range .01-99.99)
-
+norms_add
 
 
 # z-table calculations
@@ -155,31 +170,31 @@ z_scores <- tibble(
     )
 )
 
-z_table <- z_scores %>% 
+z_table <- z_scores |> 
   pivot_longer(
       cols = c(area, area_neg),
       names_to = "z_values",
       values_to = "area"
-  ) %>%
+  ) |>
   pivot_longer(
       cols = c(z_score, z_score_neg), 
       names_to = "z_scores", 
       values_to = "actual_z"
-  ) %>%
+  ) |>
   select(
     -c(
       z_values,
       z_scores
     )
-  ) %>%
+  ) |>
   rename(
     z_value = actual_z
-  ) %>%
+  ) |>
   relocate(
     area, 2
   )
 
-z_table <- z_table %>% 
+z_table <- z_table |> 
   mutate(
     condition = case_when(
       (z_value < 0 & area > .5) ~ "drop",
@@ -188,43 +203,95 @@ z_table <- z_table %>%
       (z_value > 0 & area > .5) ~ "keep",
       (z_value == 0 & area == .5) ~ "keep" 
     )
-  ) %>%
+  ) |>
   filter(
     condition != "drop"
-    ) %>%
+    ) |>
   select(
     -condition
   )
 
-z_table <- z_table %>%
+z_table <- z_table |>
   relocate(
     area, .after = z_value
-  ) %>%
+  ) |>
   mutate(
     percentile = area*100
   )
 
-(120 - population$mu)/population$sigma
 
-z_table %>%
-  filter(z_value == 1.33)
 
+z_table |>
+  filter(z_value == .67)
+
+
+
+# need to fix this
 z_calc <- function(
+  data,
   test_name,
-  score
+  score,
+  population = c("Clinical", "Nonclinical") #include a filter for different norms
 ){
-  test <- population %>% filter(test_name == test_name)
 
-  z <- (score - test$mu)/test$sigma
-  z <- round(z, 2)
+  test <- {{data}} |> dplyr::filter(full_name == {{test_name}})
 
-  output <- z_table %>% filter(z_value == z)
+  if(population == "Clinical"){
+    z <- ({{score}} - test$clinical_avg)/test$clinical_sd
+    z <- round(z, 2)
+  }
 
-  print(paste0("The client's/patient's percentile ranking is ", output$percentile))
+  else if(population == "Nonclinical"){
+    z <- ({{score}} - test$avg)/test$sd
+    z <- round(z, 2)
+  }
+
+  output <- z_table |> dplyr::filter(z_value == z)
+
+  plot <- bayestestR::distribution_normal(
+  n = 10000,
+  mean = 0,
+  sd = 1
+) |>
+as_tibble() |>
+ggplot(
+  aes(
+    value
+  )
+) +
+geom_histogram(
+  color = "white",
+  fill = "gray70",
+  alpha = .7,
+  bins = 50
+) +
+geom_vline(
+  xintercept = output$z_value[1],
+  linetype = 2,
+  color = "dodgerblue",
+  linewidth = 1.5
+) +
+theme_classic()
+
+  list(
+    paste0("The client's/patient's percentile ranking is ", output$percentile),
+    output,
+    plot
+  )
 }
 
 
 z_calc(
-  test_name = "WAIS-IV",
-  score = 120
+  data = norms_add,
+  test_name = "Wechsler Adult Intelligence Scale - 4th Edition",
+  score = 110,
+  population = "Clinical"
 )
+
+# standard, T, Z, and percentile
+
+# T 20 to 80 (full range 10-90)
+# Z -3 to 3 (full range 3.49-3.49)
+# standard 55 to 145 (full range 45-155)
+# scaled 1 to 19
+# percentile .13 to 99.87 (full range .01-99.99)

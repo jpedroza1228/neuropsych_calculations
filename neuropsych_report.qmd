@@ -50,13 +50,13 @@ list_of_tests <- tibble::tibble(
     "trailmaking_b",
     "wais_iv",
     "wms_iv",
-    "wcst_64"
+    "wcst"
   )
 )
 
 
-list_of_tests |> flextable::flextable()
-```
+list_of_tests |> gt::gt()
+```r
 
 ```{r normative populations, echo = FALSE, eval = TRUE}
 population <- tibble::tibble(
