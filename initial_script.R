@@ -47,6 +47,51 @@ tests <-tibble(
   )
 )
 
+tests <- tests |>
+  mutate(
+    subtest = case_when(
+      Abbreviation == "wais_iv" ~ "Similarities",
+      TRUE ~ NA_character_
+    ),
+    subtest2 = case_when(
+      Abbreviation == "wais_iv" ~ "Vocabulary",
+      TRUE ~ NA_character_
+    ),
+    subtest3 = case_when(
+      Abbreviation == "wais_iv" ~ "Information",
+      TRUE ~ NA_character_
+    ),
+    subtest4 = case_when(
+      Abbreviation == "wais_iv" ~ "Digit Span",
+      TRUE ~ NA_character_
+    ),
+    subtest5 = case_when(
+      Abbreviation == "wais_iv" ~ "Arithmetic",
+      TRUE ~ NA_character_
+    ),
+    subtest6 = case_when(
+      Abbreviation == "wais_iv" ~ "Block Design",
+      TRUE ~ NA_character_
+    ),
+    subtest7 = case_when(
+      Abbreviation == "wais_iv" ~ "Matrix Reasoning",
+      TRUE ~ NA_character_
+    ),
+    subtest8 = case_when(
+      Abbreviation == "wais_iv" ~ "Visual Puzzles",
+      TRUE ~ NA_character_
+    ),
+    subtest9 = case_when(
+      Abbreviation == "wais_iv" ~ "Coding",
+      TRUE ~ NA_character_
+    ),
+    subtest10 = case_when(
+      Abbreviation == "wais_iv" ~ "Symbol Search",
+      TRUE ~ NA_character_
+    )
+  )
+
+
 tests |>
   gt() |>
   tab_header(
@@ -87,7 +132,25 @@ norms_add <- norms |>
     )
   )
 
-norms_add
+norms_add <- tests |>
+  rename(
+    full_name = Test,
+    name = Abbreviation
+  ) |>
+  full_join(norms_add) |>
+  pivot_longer(
+    cols = matches("subtest"),
+    names_to = "subtest_number",
+    values_to = "subtest_name"
+  ) |>
+  relocate(
+    subtest_number,
+    .after = name
+  ) |>
+  relocate(
+    subtest_name,
+    .after = subtest_number
+  )
 
 
 # z-table calculations
@@ -221,22 +284,36 @@ z_table <- z_table |>
 
 
 
-z_table |>
-  filter(z_value == .67)
-
+# 10 mean, sd = 3
 
 
 # need to fix this
 z_calc <- function(
   data,
   test_name,
+  subtest = TRUE,
+  subtest_mean,
+  subtest_sd,
   score,
   population = c("Clinical", "Nonclinical") #include a filter for different norms
 ){
 
-  test <- {{data}} |> dplyr::filter(full_name == {{test_name}})
+  if(subtest == TRUE){
+    test <- {{data}} |> 
+    dplyr::filter(full_name == {{test_name}}) |>
+    dplyr::mutate(
+      subtest_avg = {{subtest_mean}},
+      subtest_sd = {{subtest_sd}}
+    )
 
-  if(population == "Clinical"){
+    z <- ({{score}} - test$subtest_avg)/test$subtest_sd
+    z <- round(z, 2)
+    }
+
+  else{
+    test <- {{data}} |> dplyr::filter(full_name == {{test_name}})
+
+    if(population == "Clinical"){
     z <- ({{score}} - test$clinical_avg)/test$clinical_sd
     z <- round(z, 2)
   }
@@ -244,6 +321,7 @@ z_calc <- function(
   else if(population == "Nonclinical"){
     z <- ({{score}} - test$avg)/test$sd
     z <- round(z, 2)
+  }
   }
 
   output <- z_table |> dplyr::filter(z_value == z)
@@ -253,25 +331,25 @@ z_calc <- function(
   mean = 0,
   sd = 1
 ) |>
-as_tibble() |>
-ggplot(
-  aes(
+tibble::as_tibble() |>
+ggplot2::ggplot(
+  ggplot2::aes(
     value
   )
 ) +
-geom_histogram(
+ggplot2::geom_histogram(
   color = "white",
   fill = "gray70",
   alpha = .7,
   bins = 50
 ) +
-geom_vline(
+ggplot2::geom_vline(
   xintercept = output$z_value[1],
   linetype = 2,
   color = "dodgerblue",
   linewidth = 1.5
 ) +
-theme_classic()
+ggplot2::theme_classic()
 
   list(
     paste0("The client's/patient's percentile ranking is ", output$percentile),
@@ -288,6 +366,104 @@ z_calc(
   population = "Clinical"
 )
 
+z_calc(
+  data = norms_add,
+  test_name = "Wechsler Adult Intelligence Scale - 4th Edition",
+  subtest = TRUE,
+  subtest_mean = 10,
+  subtest_sd = 3,
+  score = 8,
+  population = "Clinical"
+)
+
+compare_plot <- function(
+  type = c("line", "area"),
+  population_mean = 0,
+  population_sd = 1,
+  patient_score
+){
+
+  if(type == "line"){
+    bayestestR::distribution_normal(
+    n = 10000,
+    mean = {{population_mean}},
+    sd = {{population_sd}}
+  ) |>
+  tibble::as_tibble() |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      value
+    )
+  ) +
+  ggplot2::geom_histogram(
+    color = "white",
+    fill = "gray70",
+    alpha = .7,
+    bins = 50
+  ) +
+  ggplot2::geom_vline(
+    xintercept = {{patient_score}},
+    linetype = 2,
+    linewidth = 1.5,
+    color = "dodgerblue"
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    label = paste0("Score = ", {{patient_score}}),
+    size = 6,
+    color = "black",
+    x = ({{population_mean}} - {{population_sd}}*3),
+    y = 600
+  ) +
+  ggplot2::theme_classic()
+  }
+
+  else if(type == "area"){
+    bayestestR::distribution_normal(
+    n = 10000,
+    mean = {{population_mean}},
+    sd = {{population_sd}}
+  ) |> 
+  tibble::as_tibble() |>
+  ggplot2::ggplot(
+    ggplot2::aes(
+      value
+    )
+  ) +
+  ggplot2::geom_histogram(
+    color = "white",
+    fill = "gray70",
+    alpha = .7,
+    bins = 50
+  ) +
+  ggplot2::annotate(
+    geom = 'rect',
+    fill = 'dodgerblue',
+    alpha = .4,
+    xmin = ({{population_mean}} - {{population_sd}}*4),
+    xmax = {{patient_score}},
+    ymin = 0,
+    ymax = 650
+  ) +
+  ggplot2::annotate(
+    geom = "text",
+    label = paste0("Score = ", {{patient_score}}),
+    size = 6,
+    color = "black",
+    x = ({{population_mean}} - {{population_sd}}*3),
+    y = 600
+  ) +
+  ggplot2::theme_classic()
+  }
+}
+
+compare_plot(
+  type = "area",
+  population_mean = 10,
+  population_sd = 3,
+  patient_score = 12
+)
+
 # standard, T, Z, and percentile
 
 # T 20 to 80 (full range 10-90)
@@ -295,3 +471,5 @@ z_calc(
 # standard 55 to 145 (full range 45-155)
 # scaled 1 to 19
 # percentile .13 to 99.87 (full range .01-99.99)
+
+
