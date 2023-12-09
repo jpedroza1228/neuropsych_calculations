@@ -472,4 +472,3 @@ compare_plot(
 # scaled 1 to 19
 # percentile .13 to 99.87 (full range .01-99.99)
 
-
