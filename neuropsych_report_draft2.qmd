@@ -1,5 +1,11 @@
 ---
 params:
+  examiner: Kaitlin O'Brien, PhD # put your name and degree here
+  examiner_tf: true
+  examiner2:
+  examiner2_tf: false
+  examiner3: 
+  examiner3_tf: false
   patient_name: Jonathan Pedroza
   eval_date: 12/25/2023
   second_test: false
@@ -18,41 +24,23 @@ params:
   years_of_education: 12
   referring_dr: Dr. Sam I Am
   is_someone_accompany: false
-  accompany_relationship: spouse # options: parent, spouse, partner etc.
+  accompany_relationship: spouse #options: parent, spouse, partner etc.
   accompany_name: Not Jonathan
-  examiner: 
+  major_medical_issue1: stroke 
+  major_medical_issue2:
+  major_medical_issue3:
+  major_medical_issue4:
+  major_medical_issue5:
+  medical_decline_status: progressive #options: progressive, stable, longstanding, stepwise, acute
+  
 
-
-  man_woman <- "male" #options: male/female
-his_her <- if(man_woman == "male"){print("his")} else{print("her")}
-he_she <- if(man_woman == "male"){print("he")} else{print("she")}
-age <- "31"
-dob <- "12/28/1991" #Month/Day/Year (e.g., 12/28/1991)
-handed <- "right" #options: right/left/ambidextrous
-marital_status <- "married" #options: single, married, widowed
-race_ethnicity <- "Mexican"
-bilingual <- FALSE # type TRUE or FALSE
-years_education <- "12"
-referring_dr <- "Dr. Sam I Am"
-accompany <- TRUE #type TRUE or FALSE
-accompany_relationship <- "spouse" #options: parent, spouse, partner etc.
-accompany_name <- "Not Jon"
-if_accompany <- if(accompany == TRUE){print(glue::glue("and the patient's {accompany_relationship}, {accompany_name}, "))} else{print("")}
 major_med_issues <- "stroke" # List all medical issues relevant to patient's current presentation
 decline_status <- "progressive" # options: progressive, stable, longstanding, stepwise, acute
 domains <- "attention and cognition" # list all domains of problems
 decline_in_domain_years <- "20" # number of years since onset of problem
 major_domain <- "short-term memory"
 
-# examiners
-examiner <- TRUE
-examiner_name <- "Kaitlin M. O'Brien, PhD"
-examiner2 <- FALSE
-examiner2_name <- "" #keep empty if alone
-examiner3 <- FALSE
-examiner3_name <- ""
-
-# TOPF score
+ TOPF score
 raw_topf <- ""
 standard_topf <- ""
 
@@ -66,8 +54,7 @@ title: "Neuropsychological Report"
 author: "940 South Coast Drive Ste. 225 Costa Mesa, CA 92626 Phone: 949.743.1457 Fax: 949.274.8299"
 date: params$report_date
 format: 
-  html:
-    code-fold: true
+  docx:
 ---
 
 ```{r complete text boxes, include = FALSE}
