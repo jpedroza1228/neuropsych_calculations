@@ -48,12 +48,14 @@ shinyApp(
         textAreaInput("motor_sensory_functioning", "Patient's motor and sensorying functioning", height = "300px"),
         textAreaInput("current functioning", "Patient's current functioning (Starts Current Functioning:)", height = "300px"),
         textAreaInput("medical_history", "Patient's medical history (Starts Medical History:)", height = "300px"),
+        textAreaInput("family_history", "Patient's family history of symptoms", height = "300px"),
         textAreaInput("psychiatric_history", "Patient's psychiatric history (Starts Psychiatric History and Substance Use)", height = "300px"),
         textAreaInput("substance_use_history", "Patient's substance use history.", height = "300px"),
         textAreaInput("developmental_ed_social_occupation", "Patient's developmental, educational, social, and occupational history (Starts Developmental, Educational, Social, and Occupational History)", height = "300px"),
         textAreaInput("behavioral_observations", "Patient's behavioral observations", height = "300px"),
-
         checkboxGroupInput("administered_tests", "What tests were Administered (Check All)", choices = tests$Test),
+
+        
         selectInput("report_type", "Word doc = .docx; pdf = .pdf; web page = .html", choices = c(".docx", ".pdf", ".html")),
         downloadButton("report", "Generate report"),
         width = 4

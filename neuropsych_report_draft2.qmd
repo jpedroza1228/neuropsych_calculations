@@ -69,13 +69,7 @@ REFERRAL SOURCE:
 
 BACKGROUND AND HISTORY:
 
-History of presenting complaints: Historical information was obtained from a thorough clinical interview via telehealth with `r mr_ms` `r patient_name`. The patient, whose medical history is significant for `r major_medical_issues`, presented with complaints of longstanding difficulties with `r diagnosis_symptoms` since `r time_of_symptom_concern`. 
-
-**Note: Things to include in the background and history**
-`r mr_ms` `r patient_name`
-`r past_diagnosis`
-`r age_of_diagnosis`
-`r time_of_symptom_concern`
+[History of presenting complaints:]{.underline} Historical information was obtained from a thorough clinical interview via telehealth with `r mr_ms` `r patient_name`. The patient, whose medical history is significant for `r major_medical_issues`, presented with complaints of longstanding difficulties with `r diagnosis_symptoms` since `r time_of_symptom_concern`. 
 
 `r beginning_symptoms`
 
@@ -89,21 +83,21 @@ History of presenting complaints: Historical information was obtained from a tho
 
 `r motor_sensory_functioning`
 
-Current Functioning: `r `
+[Current Functioning:]{.underline} `r `
 `r city`
 `r state`
 
-Medical History: The patient's medical history is significant for `r major_medical_issues`. `r medical_history`
+[Medical History:]{.underline} The patient's medical history is significant for `r major_medical_issues`. `r medical_history`
 
-Current Medications: Per `r mr_ms` `r patient_name`'s report, `r he_she` is `r current_medications`. `r he_she` mentioned a previous prescription of `r past_medications`.
+[Current Medications:]{.underline} Per `r mr_ms` `r patient_name`'s report, `r he_she` is `r current_medications`. `r he_she` mentioned a previous prescription of `r past_medications`.
 
-Family History:
+[Family History:]{.underline} `r family_history` 
 
-Psychiatric History and Substance Use: `r psychiatric_history`
+[Psychiatric History and Substance Use:]{.underline} `r psychiatric_history`
 
 `r substance_use_history`
 
-Developmental, Educational, Social, and Occupational History: `r `
+[Developmental, Educational, Social, and Occupational History:]{.underline} `r `
 
 **BEHAVIORAL OBSERVATIONS:**
 
@@ -113,33 +107,27 @@ Developmental, Educational, Social, and Occupational History: `r `
 
 `r administered_tests`
 
+**TEST RESULTS:**
+
+[Validity:]{.underline} Consistent with behavioral observations, `r mr_ms` `r patient_name`'s level of effort and engagement was deemed to be appropriate based on independent and embedded measures of performance validity. As such, the following results are believed to be a valid estimate of the patient's current cogntive functioning.
+
+[Intellectual Functioning:]{.underline} `r intellectual_functioning_results`
+
+[Attention/Concentration:]{.underline}
+
+[Processing Speed:]{.underline}
+
+[Executive (Frontal Systems) Functions:]{.underline}
+
+[Language Skills:]{.underline}
+
+[Visual-Spatial Skills:]{.underline}
+
+[Memory:]{.underline}
+
+[Mood and Personality Functioning:]{.underline}
+
 # NEUROPSYCHOLOGICAL SUMMARY SCORE SHEET
-
-```{r, eval = FALSE, echo = FALSE}
-z_calc(
-  data = norms_add,
-  test_name = "Wechsler Adult Intelligence Scale - 4th Edition",
-  score = 110,
-  population = "Clinical"
-)
-
-z_calc(
-  data = norms_add,
-  test_name = "Wechsler Adult Intelligence Scale - 4th Edition",
-  subtest = TRUE,
-  subtest_mean = 10,
-  subtest_sd = 3,
-  score = 8,
-  population = "Clinical"
-)
-
-compare_plot(
-  type = "area",
-  population_mean = 10,
-  population_sd = 3,
-  patient_score = 12
-)
-```
 
 ```{r, echo = FALSE, eval = TRUE}
 premorbid |>
