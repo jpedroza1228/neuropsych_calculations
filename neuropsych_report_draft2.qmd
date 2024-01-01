@@ -1,566 +1,56 @@
 ---
+format: docx
 params:
-  examiner: Kaitlin O'Brien, PhD # put your name and degree here
-  examiner_tf: true
-  examiner2:
-  examiner2_tf: false
-  examiner3: 
-  examiner3_tf: false
-  patient_name: Jonathan Pedroza
-  eval_date: 12/25/2023
-  second_test: false
-  past_eval_date: 
-  report_date: "`r Sys.Date()`"
-  mr_ms: Mr. #options include: Mr., Ms.,  Mrs., Dr. 
-  man_woman: male
-  his_her_their: his #options include: his, her, their
-  he_she: he #options include: he/she/they
-  age: 32
-  date_of_birth: 12/25/1991
-  handed: right #options include: left/right
-  marital_status: married #options: single, married, widowed
-  race_ethnicity: Mexican #options: Mexican, Black/African American, etc.
-  bilingual: false
-  years_of_education: 12
-  referring_dr: Dr. Sam I Am
-  is_someone_accompany: false
-  accompany_relationship: spouse #options: parent, spouse, partner etc.
-  accompany_name: Not Jonathan
-  major_medical_issue1: stroke 
-  major_medical_issue2:
-  major_medical_issue3:
-  major_medical_issue4:
-  major_medical_issue5:
-  medical_decline_status: progressive #options: progressive, stable, longstanding, stepwise, acute
-  
+  patient_name: NA
+  dob: NA
+  interview_date: NA
+  testing_date: NA
+  examiner: NA
+  examiner2_tf: NA
+  examiner2: NA
+  examiner3_tf: NA
+  examiner3: NA
+  mr_ms: NA
+  male_female: NA
+  his_her_their: NA
+  he_she_they: NA
+  patient_age: NA
+  handed: NA
+  marital_status: NA
+  race_ethnicity: NA
+  bilingual: NA
+  years_of_ed: NA
+  referred: NA
+  referring_dr: NA
+  past_diagnosis_tf: NA
+  past_diagnosis: NA
 
-major_med_issues <- "stroke" # List all medical issues relevant to patient's current presentation
-decline_status <- "progressive" # options: progressive, stable, longstanding, stepwise, acute
-domains <- "attention and cognition" # list all domains of problems
-decline_in_domain_years <- "20" # number of years since onset of problem
-major_domain <- "short-term memory"
-
- TOPF score
-raw_topf <- ""
-standard_topf <- ""
-
-# WAIS-IV score
-raw_wais_iv <- ""
-standard_wais_iv <- ""
-
-diagnosis_etiology <- "ADHD"
-
-title: "Neuropsychological Report"
-author: "940 South Coast Drive Ste. 225 Costa Mesa, CA 92626 Phone: 949.743.1457 Fax: 949.274.8299"
-date: params$report_date
-format: 
-  docx:
+  accompany: NA
+  accompany_relationship: NA
+  accompany_name: NA
+  major_medical_issue1: NA
+  major_medical_issue2: NA
+  major_medical_issue3: NA
+  major_medical_issue4: NA
+  major_medical_issue5: NA
+  medical_decline_status: NA
 ---
 
-```{r complete text boxes, include = FALSE}
+![](logo.jpg){width=100px, height=175px}
 
-patient_name <- "Jon Pedroza"
-eval_date <- "12/25/2023"
-re_test <- FALSE # type TRUE or FALSE
-past_eval_date <- ""
-re_test_statement <- if(re_test == FALSE){print("")}else{print(glue::glue("This assessment is a re-evaluation of a previous neuropsychological evluation that was taken on {past_eval_date}"))}
-report_date <- Sys.Date()
-# mr_ms <- c("Mr", "Ms", "Mrs")
-mr_ms <- "Mr"
-man_woman <- "male" #options: male/female
-his_her <- if(man_woman == "male"){print("his")} else{print("her")}
-he_she <- if(man_woman == "male"){print("he")} else{print("she")}
-age <- "31"
-dob <- "12/28/1991" #Month/Day/Year (e.g., 12/28/1991)
-handed <- "right" #options: right/left/ambidextrous
-marital_status <- "married" #options: single, married, widowed
-race_ethnicity <- "Mexican"
-bilingual <- FALSE # type TRUE or FALSE
-years_education <- "12"
-referring_dr <- "Dr. Sam I Am"
-accompany <- TRUE #type TRUE or FALSE
-accompany_relationship <- "spouse" #options: parent, spouse, partner etc.
-accompany_name <- "Not Jon"
-if_accompany <- if(accompany == TRUE){print(glue::glue("and the patient's {accompany_relationship}, {accompany_name}, "))} else{print("")}
-major_med_issues <- "stroke" # List all medical issues relevant to patient's current presentation
-decline_status <- "progressive" # options: progressive, stable, longstanding, stepwise, acute
-domains <- "attention and cognition" # list all domains of problems
-decline_in_domain_years <- "20" # number of years since onset of problem
-major_domain <- "short-term memory"
-
-# examiners
-examiner <- TRUE
-examiner_name <- "Kaitlin M. O'Brien, PhD"
-examiner2 <- FALSE
-examiner2_name <- "" #keep empty if alone
-examiner3 <- FALSE
-examiner3_name <- ""
-
-# TOPF score
-raw_topf <- ""
-standard_topf <- ""
-
-# WAIS-IV score
-raw_wais_iv <- ""
-standard_wais_iv <- ""
-
-diagnosis_etiology <- "ADHD"
-
-```
-
-```{r test names and abbreviations, include = FALSE}
-library(tidyverse)
-library(bayestestR)
-library(gt)
-
-tests <-tibble(
-  Test = c(
-    "Beck Anxiety Inventory",
-    "Beck Depression Inventory",
-    "Boston Naming Test",
-    "Brief Visuospatial Memory Test - Revised",
-    "California Verbal Learning Test - II",
-    "Conners' Adult ADHD Rating Scales - Self Report: Long Version",
-    "Conners' Continuous Performance Test - 3rd Edition",
-    "Controlled Oral Word Association Test",
-    "Minnesota Multiphasic Personality Inventory - 2 Restructured Form",
-    "Rey-Osterrieth Complex Figure Test",
-    "Stroop - Word Naming",
-    "Stroop - Color Naming",
-    "Stroop - Colored Word Naming",
-    "Test of Premorbid Function",
-    "Trailmaking Test A",
-    "Trailmaking Test B",
-    "Wechsler Adult Intelligence Scale - 4th Edition",
-    "Wechsler Memory Scale - 4th Edition",
-    "Wisconsin Card Sorting Test"
-  ),
-  Abbreviation = c(
-    "bai",
-    "bdi_ii",
-    "bnt",
-    "bvmt_r",
-    "cvlt_ii",
-    "caars_s_l",
-    "cpt_3",
-    "fas_animals",
-    "mmpi_2_rf",
-    "rocft",
-    "stroop_word",
-    "stroop_color",
-    "stroop_color_word",
-    "topf",
-    "trailmaking_a",
-    "trailmaking_b",
-    "wais_iv",
-    "wms_iv",
-    "wcst"
+`r paste0(
+  "940 South Coast Drive Ste. 225", "\n",
+  "Costa Mesa, CA 92626 ", "\n",
+  "Phone: (949) 743-1457", "\n",
+  "Fax: (949) 274-8299"
   )
-)
-
-tests <- tests |>
-  mutate(
-    subtest = case_when(
-      Abbreviation == "wais_iv" ~ "Similarities",
-      TRUE ~ NA_character_
-    ),
-    subtest2 = case_when(
-      Abbreviation == "wais_iv" ~ "Vocabulary",
-      TRUE ~ NA_character_
-    ),
-    subtest3 = case_when(
-      Abbreviation == "wais_iv" ~ "Information",
-      TRUE ~ NA_character_
-    ),
-    subtest4 = case_when(
-      Abbreviation == "wais_iv" ~ "Digit Span",
-      TRUE ~ NA_character_
-    ),
-    subtest5 = case_when(
-      Abbreviation == "wais_iv" ~ "Arithmetic",
-      TRUE ~ NA_character_
-    ),
-    subtest6 = case_when(
-      Abbreviation == "wais_iv" ~ "Block Design",
-      TRUE ~ NA_character_
-    ),
-    subtest7 = case_when(
-      Abbreviation == "wais_iv" ~ "Matrix Reasoning",
-      TRUE ~ NA_character_
-    ),
-    subtest8 = case_when(
-      Abbreviation == "wais_iv" ~ "Visual Puzzles",
-      TRUE ~ NA_character_
-    ),
-    subtest9 = case_when(
-      Abbreviation == "wais_iv" ~ "Coding",
-      TRUE ~ NA_character_
-    ),
-    subtest10 = case_when(
-      Abbreviation == "wais_iv" ~ "Symbol Search",
-      TRUE ~ NA_character_
-    )
-  )
-
-norms <- tibble::tibble(
-  name = tests$Abbreviation,
-  full_name = tests$Test,
-  range_low_raw = c(0, rep(NA_real_, 15), 1, rep(NA_real_, 2)),
-  range_high_raw = c(63, rep(NA_real_, 15), 300, rep(NA_real_, 2)),
-  range_low_standard = c(rep(NA_real_, 16), 45, rep(NA_real_, 2)),
-  range_high_standard = c(rep(NA_real_, 16), 155, rep(NA_real_, 2)),
-  avg = c(9.89, rep(NA_real_, 18)),
-  sd = c(8.76, rep(NA_real_, 18)),
-  clinical_avg = c(rep(NA_real_, 16), 100, rep(NA_real_, 2)),
-  clinical_sd = c(rep(NA_real_, 16), 15, rep(NA_real_, 2))
-)
-
-norms_add <- norms |>
-  mutate(
-    male_avg_nonclinical = case_when(
-      name == "bai" ~ 8.1,
-      TRUE  ~ NA_real_
-    ),
-    male_sd_nonclinical = case_when(
-      name == "bai" ~ 7.96,
-      TRUE ~ NA_real_
-    ),
-    female_avg_nonclinical = case_when(
-      name == "bai" ~ 11.09,
-      TRUE  ~ NA_real_
-    ),
-    female_sd_nonclinical = case_when(
-      name == "bai" ~ 9.13,
-      TRUE ~ NA_real_
-    )
-  )
-
-norms_add <- tests |>
-  rename(
-    full_name = Test,
-    name = Abbreviation
-  ) |>
-  full_join(norms_add) |>
-  pivot_longer(
-    cols = matches("subtest"),
-    names_to = "subtest_number",
-    values_to = "subtest_name"
-  ) |>
-  relocate(
-    subtest_number,
-    .after = name
-  ) |>
-  relocate(
-    subtest_name,
-    .after = subtest_number
-  )
-```
-
-```{r tests and subtest table, echo = FALSE, eval = TRUE}
-tests |>
-  select(Test:Abbreviation) |>
-  gt() |>
-  tab_header(
-    "List of Available Neuropsychological Assessments & Abbreviations"
-  )
-
-tests |>
-  select(-Abbreviation) |>
-  gt() |>
-  tab_header(
-    "List of Available Neuropsychological Assessments & Abbreviations"
-  )
-```
-
-```{r z table, include = FALSE}
-# z-table calculations
-z_scores <- tibble(
-    z_score = seq(0, 3.49, .01),
-    area = c(
-        .5000, 0.5040,	0.5080,	0.5120,	0.5160,	0.5199,	0.5239,	0.5279,	0.5319,	0.5359,
-0.5398,	0.5438,	0.5478,	0.5517,	0.5557,	0.5596,	0.5636,	0.5675,	0.5714,	0.5753,
-0.5793,	0.5832,	0.5871,	0.5910,	0.5948,	0.5987,	0.6026,	0.6064,	0.6103,	0.6141,
-0.6179,	0.6217,	0.6255,	0.6293,	0.6331,	0.6368,	0.6406,	0.6443,	0.6480,	0.6517,
-0.6554,	0.6591,	0.6628,	0.6664,	0.6700,	0.6736,	0.6772,	0.6808,	0.6844,	0.6879,
-0.6915,	0.6950,	0.6985,	0.7019,	0.7054,	0.7088,	0.7123,	0.7157,	0.7190,	0.7224,
-0.7257,	0.7291,	0.7324,	0.7357,	0.7389,	0.7422,	0.7454,	0.7486,	0.7517,	0.7549,
-0.7580,	0.7611,	0.7642,	0.7673,	0.7704,	0.7734,	0.7764,	0.7794,	0.7823,	0.7852,
-0.7881,	0.7910,	0.7939,	0.7967,	0.7995,	0.8023,	0.8051,	0.8078,	0.8106,	0.8133,
-0.8159,	0.8186,	0.8212,	0.8238,	0.8264,	0.8289,	0.8315,	0.8340,	0.8365,	0.8389,
-0.8413,	0.8438,	0.8461,	0.8485,	0.8508,	0.8531,	0.8554,	0.8577,	0.8599,	0.8621,
-0.8643,	0.8665,	0.8686,	0.8708,	0.8729,	0.8749,	0.8770,	0.8790,	0.8810,	0.8830,
-0.8849,	0.8869,	0.8888,	0.8907,	0.8925,	0.8944,	0.8962,	0.8980,	0.8997,	0.9015,
-0.9032,	0.9049,	0.9066,	0.9082,	0.9099,	0.9115,	0.9131,	0.9147,	0.9162,	0.9177,
-0.9192,	0.9207,	0.9222,	0.9236,	0.9251,	0.9265,	0.9279,	0.9292,	0.9306,	0.9319,
-0.9332,	0.9345,	0.9357,	0.9370,	0.9382,	0.9394,	0.9406,	0.9418,	0.9429,	0.9441,
-0.9452,	0.9463,	0.9474,	0.9484,	0.9495,	0.9505,	0.9515,	0.9525,	0.9535,	0.9545,
-0.9554,	0.9564,	0.9573,	0.9582,	0.9591,	0.9599,	0.9608,	0.9616,	0.9625,	0.9633,
-0.9641,	0.9649,	0.9656,	0.9664,	0.9671,	0.9678,	0.9686,	0.9693,	0.9699,	0.9706,
-0.9713,	0.9719,	0.9726,	0.9732,	0.9738,	0.9744,	0.9750,	0.9756,	0.9761,	0.9767,
-0.9772,	0.9778,	0.9783,	0.9788,	0.9793,	0.9798,	0.9803,	0.9808,	0.9812,	0.9817,
-0.9821,	0.9826,	0.9830,	0.9834,	0.9838,	0.9842,	0.9846,	0.9850,	0.9854,	0.9857,
-0.9861,	0.9864,	0.9868,	0.9871,	0.9875,	0.9878,	0.9881,	0.9884,	0.9887,	0.9890,
-0.9893,	0.9896,	0.9898,	0.9901,	0.9904,	0.9906,	0.9909,	0.9911,	0.9913,	0.9916,
-0.9918,	0.9920,	0.9922,	0.9925,	0.9927,	0.9929,	0.9931,	0.9932,	0.9934,	0.9936,
-0.9938,	0.9940,	0.9941,	0.9943,	0.9945,	0.9946,	0.9948,	0.9949,	0.9951,	0.9952,
-0.9953,	0.9955,	0.9956,	0.9957,	0.9959,	0.9960,	0.9961,	0.9962,	0.9963,	0.9964,
-0.9965,	0.9966,	0.9967,	0.9968,	0.9969,	0.9970,	0.9971,	0.9972,	0.9973,	0.9974,
-0.9974,	0.9975,	0.9976,	0.9977,	0.9977,	0.9978,	0.9979,	0.9979,	0.9980,	0.9981,
-0.9981,	0.9982,	0.9982,	0.9983,	0.9984,	0.9984,	0.9985,	0.9985,	0.9986,	0.9986,
-0.9987,	0.9987,	0.9987,	0.9988,	0.9988,	0.9989,	0.9989,	0.9989,	0.9990,	0.9990,
-0.9990,	0.9991,	0.9991,	0.9991,	0.9992,	0.9992,	0.9992,	0.9992,	0.9993,	0.9993,
-0.9993,	0.9993,	0.9994,	0.9994,	0.9994,	0.9994,	0.9994,	0.9995,	0.9995,	0.9995,
-0.9995,	0.9995,	0.9995,	0.9996,	0.9996,	0.9996,	0.9996,	0.9996,	0.9996,	0.9997,
-0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9998
-    ),
-    z_score_neg = seq(0, -3.49, -.01),
-    area_neg = c(
-        0.5000,	0.4960,	0.4920,	0.4880,	0.4840,	0.4801,	0.4761,	0.4721,	0.4681,	0.4641,
-0.4602,	0.4562,	0.4522,	0.4483,	0.4443,	0.4404,	0.4364,	0.4325,	0.4286,	0.4247,
-0.4207,	0.4168,	0.4129,	0.4090,	0.4052,	0.4013,	0.3974,	0.3936,	0.3897,	0.3859,
-0.3821,	0.3783,	0.3745,	0.3707,	0.3669,	0.3632,	0.3594,	0.3557,	0.3520,	0.3483,
-0.3446,	0.3409,	0.3372,	0.3336,	0.3300,	0.3264,	0.3228,	0.3192,	0.3156,	0.3121,
-0.3085,	0.3050,	0.3015,	0.2981,	0.2946,	0.2912,	0.2877,	0.2843,	0.2810,	0.2776,
-0.2743,	0.2709,	0.2676,	0.2643,	0.2611,	0.2578,	0.2546,	0.2514,	0.2483,	0.2451,
-0.2420,	0.2389,	0.2358,	0.2327,	0.2296,	0.2266,	0.2236,	0.2206,	0.2177,	0.2148,
-0.2119,	0.2090,	0.2061,	0.2033,	0.2005,	0.1977,	0.1949,	0.1922,	0.1894,	0.1867,
-0.1841,	0.1814,	0.1788,	0.1762,	0.1736,	0.1711,	0.1685,	0.1660,	0.1635,	0.1611,
-0.1587,	0.1562,	0.1539,	0.1515,	0.1492,	0.1469,	0.1446,	0.1423,	0.1401,	0.1379,
-0.1357,	0.1335,	0.1314,	0.1292,	0.1271,	0.1251,	0.1230,	0.1210,	0.1190,	0.1170,
-0.1151,	0.1131,	0.1112,	0.1093,	0.1075,	0.1056,	0.1038,	0.1020,	0.1003,	0.0985,
-0.0968,	0.0951,	0.0934,	0.0918,	0.0901,	0.0885,	0.0869,	0.0853,	0.0838,	0.0823,
-0.0808,	0.0793,	0.0778,	0.0764,	0.0749,	0.0735,	0.0721,	0.0708,	0.0694,	0.0681,
-0.0668,	0.0655,	0.0643,	0.0630,	0.0618,	0.0606,	0.0594,	0.0582,	0.0571,	0.0559,
-0.0548,	0.0537,	0.0526,	0.0516,	0.0505,	0.0495,	0.0485,	0.0475,	0.0465,	0.0455,
-0.0446,	0.0436,	0.0427,	0.0418,	0.0409,	0.0401,	0.0392,	0.0384,	0.0375,	0.0367,
-0.0359,	0.0351,	0.0344,	0.0336,	0.0329,	0.0322,	0.0314,	0.0307,	0.0301,	0.0294,
-0.0287,	0.0281,	0.0274,	0.0268,	0.0262,	0.0256,	0.0250,	0.0244,	0.0239,	0.0233,
-0.0228,	0.0222,	0.0217,	0.0212,	0.0207,	0.0202,	0.0197,	0.0192,	0.0188,	0.0183,
-0.0179,	0.0174,	0.0170,	0.0166,	0.0162,	0.0158,	0.0154,	0.0150,	0.0146,	0.0143,
-0.0139,	0.0136,	0.0132,	0.0129,	0.0125,	0.0122,	0.0119,	0.0116,	0.0113,	0.0110,
-0.0107,	0.0104,	0.0102,	0.0099,	0.0096,	0.0094,	0.0091,	0.0089,	0.0087,	0.0084,
-0.0082,	0.0080,	0.0078,	0.0075,	0.0073,	0.0071,	0.0069,	0.0068,	0.0066,	0.0064,
-0.0062,	0.0060,	0.0059,	0.0057,	0.0055,	0.0054,	0.0052,	0.0051,	0.0049,	0.0048,
-0.0047,	0.0045,	0.0044,	0.0043,	0.0041,	0.0040,	0.0039,	0.0038,	0.0037,	0.0036,
-0.0035,	0.0034,	0.0033,	0.0032,	0.0031,	0.0030,	0.0029,	0.0028,	0.0027,	0.0026,
-0.0026,	0.0025,	0.0024,	0.0023,	0.0023,	0.0022,	0.0021,	0.0021,	0.0020,	0.0019,
-0.0019,	0.0018,	0.0018,	0.0017,	0.0016,	0.0016,	0.0015,	0.0015,	0.0014,	0.0014,
-0.0013,	0.0013,	0.0013,	0.0012,	0.0012,	0.0011,	0.0011,	0.0011,	0.0010,	0.0010,
-0.0010,	0.0009,	0.0009,	0.0009,	0.0008,	0.0008,	0.0008,	0.0008,	0.0007,	0.0007,
-0.0007,	0.0007,	0.0006,	0.0006,	0.0006,	0.0006,	0.0006,	0.0005,	0.0005,	0.0005,
-0.0005,	0.0005,	0.0005,	0.0004,	0.0004,	0.0004,	0.0004,	0.0004,	0.0004,	0.0003,
-0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0002
-    )
-)
-
-z_table <- z_scores |> 
-  pivot_longer(
-      cols = c(area, area_neg),
-      names_to = "z_values",
-      values_to = "area"
-  ) |>
-  pivot_longer(
-      cols = c(z_score, z_score_neg), 
-      names_to = "z_scores", 
-      values_to = "actual_z"
-  ) |>
-  select(
-    -c(
-      z_values,
-      z_scores
-    )
-  ) |>
-  rename(
-    z_value = actual_z
-  ) |>
-  relocate(
-    area, 2
-  )
-
-z_table <- z_table |> 
-  mutate(
-    condition = case_when(
-      (z_value < 0 & area > .5) ~ "drop",
-      (z_value > 0 & area < .5) ~ "drop",
-      (z_value < 0 & area < .5) ~ "keep",
-      (z_value > 0 & area > .5) ~ "keep",
-      (z_value == 0 & area == .5) ~ "keep" 
-    )
-  ) |>
-  filter(
-    condition != "drop"
-    ) |>
-  select(
-    -condition
-  )
-
-z_table <- z_table |>
-  relocate(
-    area, .after = z_value
-  ) |>
-  mutate(
-    percentile = area*100
-  )
-```
-
-```{r functions, echo = FALSE, eval = TRUE}
-z_calc <- function(
-  data,
-  test_name,
-  subtest = TRUE,
-  subtest_mean,
-  subtest_sd,
-  score,
-  population = c("Clinical", "Nonclinical") #include a filter for different norms
-){
-
-  if(subtest == TRUE){
-    test <- {{data}} |> 
-    dplyr::filter(full_name == {{test_name}}) |>
-    dplyr::mutate(
-      subtest_avg = {{subtest_mean}},
-      subtest_sd = {{subtest_sd}}
-    )
-
-    z <- ({{score}} - test$subtest_avg)/test$subtest_sd
-    z <- round(z, 2)
-    }
-
-  else{
-    test <- {{data}} |> dplyr::filter(full_name == {{test_name}})
-
-    if(population == "Clinical"){
-    z <- ({{score}} - test$clinical_avg)/test$clinical_sd
-    z <- round(z, 2)
-  }
-
-  else if(population == "Nonclinical"){
-    z <- ({{score}} - test$avg)/test$sd
-    z <- round(z, 2)
-  }
-  }
-
-  output <- z_table |> dplyr::filter(z_value == z)
-
-  plot <- bayestestR::distribution_normal(
-  n = 10000,
-  mean = 0,
-  sd = 1
-) |>
-tibble::as_tibble() |>
-ggplot2::ggplot(
-  ggplot2::aes(
-    value
-  )
-) +
-ggplot2::geom_histogram(
-  color = "white",
-  fill = "gray70",
-  alpha = .7,
-  bins = 50
-) +
-ggplot2::geom_vline(
-  xintercept = output$z_value[1],
-  linetype = 2,
-  color = "dodgerblue",
-  linewidth = 1.5
-) +
-ggplot2::theme_classic()
-
-  list(
-    paste0("The client's/patient's percentile ranking is ", output$percentile),
-    output,
-    plot
-  )
-}
-
-compare_plot <- function(
-  type = c("line", "area"),
-  population_mean = 0,
-  population_sd = 1,
-  patient_score
-){
-
-  if(type == "line"){
-    bayestestR::distribution_normal(
-    n = 10000,
-    mean = {{population_mean}},
-    sd = {{population_sd}}
-  ) |>
-  tibble::as_tibble() |>
-  ggplot2::ggplot(
-    ggplot2::aes(
-      value
-    )
-  ) +
-  ggplot2::geom_histogram(
-    color = "white",
-    fill = "gray70",
-    alpha = .7,
-    bins = 50
-  ) +
-  ggplot2::geom_vline(
-    xintercept = {{patient_score}},
-    linetype = 2,
-    linewidth = 1.5,
-    color = "dodgerblue"
-  ) +
-  ggplot2::annotate(
-    geom = "text",
-    label = paste0("Score = ", {{patient_score}}),
-    size = 6,
-    color = "black",
-    x = ({{population_mean}} - {{population_sd}}*3),
-    y = 600
-  ) +
-  ggplot2::theme_classic()
-  }
-
-  else if(type == "area"){
-    bayestestR::distribution_normal(
-    n = 10000,
-    mean = {{population_mean}},
-    sd = {{population_sd}}
-  ) |> 
-  tibble::as_tibble() |>
-  ggplot2::ggplot(
-    ggplot2::aes(
-      value
-    )
-  ) +
-  ggplot2::geom_histogram(
-    color = "white",
-    fill = "gray70",
-    alpha = .7,
-    bins = 50
-  ) +
-  ggplot2::annotate(
-    geom = 'rect',
-    fill = 'dodgerblue',
-    alpha = .4,
-    xmin = ({{population_mean}} - {{population_sd}}*4),
-    xmax = {{patient_score}},
-    ymin = 0,
-    ymax = 650
-  ) +
-  ggplot2::annotate(
-    geom = "text",
-    label = paste0("Score = ", {{patient_score}}),
-    size = 6,
-    color = "black",
-    x = ({{population_mean}} - {{population_sd}}*3),
-    y = 600
-  ) +
-  ggplot2::theme_classic()
-  }
-}
-```
+`
 
 **Name**: `r patient_name`
 
 **DOB**: `r dob`
 
-**DATE OF EVALUATION**: `r eval_date`
+**DATE(S) OF EVALUATION**: `r interview_date` (Interview) and `r testing_date` (Testing)
 
 `r if(examiner2 == FALSE & examiner3 == FALSE){
   paste0("EXAMINER: ", print(examiner_name))
@@ -575,163 +65,53 @@ compare_plot <- function(
 
 REFERRAL SOURCE: 
 
-`r mr_ms` `r patient_name` is a `r age`-year-old, `r handed`-handed, `r marital_status`, `r race_ethnicity`, `r if(bilingual == TRUE){print("bilingual ")} else{print(" ")}``r man_woman` with `r years_education` years of education. `r mr_ms` `r patient_name` was referred for a neuropsychological evaluation by `r referring_dr`. The purpose of the assessment was to evaluate `r his_her` current cognitive functioning for `r his_her` clinical care, including aiding with diagnostic clarification and treatment planning; as such, this evaluation may not be appropriate for other purposes (i.e., legal or forensic purposes). 
+`r mr_ms` `r patient_name` is a `r age`-year-old, `r handed`-handed, `r marital_status`, `r race_ethnicity`, `r if(bilingual == TRUE){print("bilingual ")} else{print(" ")}``r man_woman` with `r years_education` years of education. `r mr_ms` `r patient_name` was `r if (referred == FALSE){paste0("self-referred", " for a neuropsychological evaluation.")} else if(referred == TRUE){paste0("referred for a neuropsychological evaluation by ", print("referring_dr"))}`. `r if(past_diagnosis_tf == TRUE){paste0(print(he_she), " had a previous diagnosis of ", print(past_diagnosis), " by ", print(his_her), " ", print(past_dr_diagnosing), " when ", print(he_she), " was ", print(age_of_diagnosis)".")} else {""}. The purpose of the assessment was to evaluate `r his_her` current cognitive functioning for `r his_her` clinical care, including aiding with diagnostic clarification and treatment planning; as such, this evaluation may not be appropriate for other purposes (i.e., legal or forensic purposes). 
 
 BACKGROUND AND HISTORY:
 
-History of Presenting Complaints: Historical information was obtained from a thorough clinical interview with the patient [and the patient’s [relationship to patient], NAME], and review of available medical records.y not be appropriate for other purposes (i.e., legal or forensic purposes).
+History of presenting complaints: Historical information was obtained from a thorough clinical interview via telehealth with `r mr_ms` `r patient_name`. The patient, whose medical history is significant for `r major_medical_issues`, presented with complaints of longstanding difficulties with `r diagnosis_symptoms` since `r time_of_symptom_concern`. 
 
-BACKGROUND AND HISTORY:
+**Note: Things to include in the background and history**
+`r mr_ms` `r patient_name`
+`r past_diagnosis`
+`r age_of_diagnosis`
+`r time_of_symptom_concern`
 
-History of presenting complaints: Historical information was obtained from a thorough clinical interview with the patient `r if_accompany` and review of available medical records.
+`r beginning_symptoms`
 
-The patient, whose medical history is significant for `r major_med_issues`, presented with subjective complaints of gradually `r decline_status` declines in `r domains` with an insidious onset approximately `r decline_in_domain_years` years ago.
+`r hs_college_symptoms`
 
-`r mr_ms` `r patient_name` reported significant difficulties in `r major_domain` characterized by...
+`r occupational_symptoms`
 
-```{r}
-cog_issues <- "attention and concentration"
-more_cog_issues <- "mental clarity or alterness"
-```
+`r current_mood`
 
+`r current_sleep`
 
-`r he_she` denied declines in `r cog_issues`. `r he_she` denied fluctuations in `r more_cog_issues`... **Include additional information about the patient's processing speed, expressive language/word-finding, visuospatial ability, and executive functioning here.**
+`r motor_sensory_functioning`
 
-With regard to mood, `r mr_ms` `r patient_name` endorsed 
+Current Functioning: `r `
+`r city`
+`r state`
 
-**FROM TEMPLATE**
+Medical History: The patient's medical history is significant for `r major_medical_issues`. `r medical_history`
 
-With regard to mood, Ms. XX endorsed…. … (symptoms of depression including feelings of dysphoria, hopelessness, anhedonia, suicidal ideation, etc; can also comment on changes in energy, sleep, eating,). OR With regard to mood, Ms. XX denied symptoms of depression, anxiety, mania, hallucinations, delusions, and suicidal or homicidal ideation. 
-She reported obtaining XX hours of sleep per night. She denied difficulty with sleep initiation or maintenance. She denied symptoms of obstructive sleep apnea or REM sleep behavior disorder.
+Current Medications: Per `r mr_ms` `r patient_name`'s report, `r he_she` is `r current_medications`. `r he_she` mentioned a previous prescription of `r past_medications`.
 
-Regarding motor and sensory functioning, she denied a history of gait disturbance, recent falls, imbalance, tremor, reduced coordination, dysphagia, urinary incontinence, or neuropathy. She denied diplopia or blurred vision. She denied declines in olfaction/gustation. On the day of the evaluation, she rated her pain as a “[insert number]” on a 0-10 severity scale. 
+Family History:
 
-Telephone Interview: The patient’s XX was contacted to provide additional information regarding her XX functioning. DESCRIBE INFORMATION OBTAINED… REMOVE IF NOT APPLICABLE.  
+Psychiatric History and Substance Use: `r psychiatric_history`
 
-Baseline Neuropsychological Evaluation: Baseline neuropsychological exam was conducted in our clinic on XX/XX/20XX. Results of that evaluation indicated…Give a thorough description of impairments, strengths, weaknesses, etc.  The patient was found to meet DSM-5 diagnostic criteria for Mild/Major Neurocognitive Disorder. The patient’s clinical presentation and neuropsychological performance were thought to be most consistent with the early stages of Alzheimer’s disease, with consideration given to a secondary vascular contribution.  REMOVE IF NOT APPLICABLE
+`r substance_use_history`
 
-Current Functioning: The patient resides with… in [city], California. She works full-time/is fully retired. Ms. * remains fully independent in basic and instrumental ADLs – Include any relevant information about the following:
-Driving
-Medications 
-Managing appointments/calendar
-Finances
-Other IADLs to include if we have info– shopping, cooking, basic household chores, basic home repairs 
+Developmental, Educational, Social, and Occupational History: `r `
 
-Medical History: The patient’s medical history is significant for [list all]. [Describe any TBIs or other neurological events in detail if not already described in background]. She denied a history of traumatic brain injury, seizure, stroke, toxic exposure, or anoxic events (delete if sleep apnea).  Surgical history is notable for…. 
+**BEHAVIORAL OBSERVATIONS:**
 
-Current Medications: Per medical records [or per patient report], the patient is prescribed XX (XXmg daily), XX (XXmcg nightly), and XX (XXmg prn). 
+`r behavioral_observations`
 
-Family History: [Include info on biological relatives: Mother, father, siblings, children]
-Family medical history is significant for…. Family psychiatric history is notable for….
+**TESTS ADMINISTERED:**
 
-Neuroimaging Studies/Laboratory Studies: 
-Brain FDG-PET/CT on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
-
-MRI of the brain with volumetric analysis on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
-
-An EEG completed on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
-
-A polysomnogram completed on date (read by insert physician name, M.D.): “insert quoted findings/interpretation here.”
-
-[List all neuroimaging in reverse chronological order (most recent first). Do not include imaging of the spine unless especially relevant] FDG-PET, MRI, CT, EEGs, Sleep studies.
-
-[Include any relevant abnormal labs, such as A1c, Vitamin B12, etc]
-
-Genetic testing on [date] identified an ApoE e#/e# genotype.
-
-[Include any CSF/Admark or other genetic studies if available]
-
-Psychiatric History and Substance Use: The patient’s psychiatric history is remarkable for XXX [Describe current and past treatment, including psychotherapy and psychotropic medication in general.] She denied a history of suicidal ideation or psychiatric hospitalization. 
-
-Ms. * denied a history of nicotine/tobacco use, alcohol abuse, or recreational drug use.] <OR> Ms. XX reported consuming alcohol XX times per XX, no more than XX drinks of XX per instance. She reported a XX-year history of cigarette smoking XX years ago. She reported a history of using [marijuana, cocaine, amphetamine, hallucinogen, prescription drug; include frequency].
-
-Developmental, Educational, Social and Occupational History: Ms. * was born and raised in [city, state/country] as the [eldest/second/third] of [#] children. She speaks [English] as her native language. [If not English then describe when/how patient learned English] There is no known history of developmental delays, learning disorders, or attentional/behavioral disorders. She earned a high school diploma and completed [education and degrees]. She was employed as a [job title and description] and retired in [year]. She is [widowed/married/divorced/separated [and lives in [city] with his spouse of [#] years. She has [#] children, ages [#] who live in , XXX and XX grandchildren. 
-
-BEHAVIORAL OBSERVATIONS: 
-Ms. * arrived to the telehealth clinical interview and on-site testing appointments punctually, and was unaccompanied throughout both visits. She presented as casually dressed and appropriately groomed. She wore a face mask to the on-site visit due to the current COVID-19 pandemic. She was alert and fully oriented. She made good eye contact and appropriately followed social cues. Hearing and vision appeared adequate for testing. Speech was of normal rate, tone, volume, and prosody. Her insight and judgement appeared intact. There was no evidence of expressive or receptive language difficulties. Thinking was observed to be logical and sequential, without any evidence of delusion, hallucination, perseveration, or disorganization. Affect was euthymic, which was congruent with stated mood. During testing, Ms. * did not have difficulty understanding or retaining task demands. She worked consistently for the duration of testing, without significant distractibility and impulsivity. She responded appropriately to the challenges inherent to the cognitive tasks, with good tolerance for frustration. Overall, she was cooperative with the evaluation and did not demonstrate behaviors to raise concerns of poor effort.
-
- [If there are concerns about validity problems due to linguistic or cultural factors. REMOVE IF NOT APPLICABLE]
-It is important to acknowledge the possible contribution of linguistic, ethnic and cultural factors to the test results. Although Ms. * speaks fluent English, the normative data used in the interpretation of performance were obtained from a predominantly White, monolingual, North American population. The dissimilarities between the patient’s background and the characteristics of the normative/standardization samples and non-native speakers may result in underestimation of her true abilities particularly on tests that involve items with specific cultural references. Such ethnocultural and linguistic factors present potential limitations to accurate neuropsychological inference and should be considered when interpreting the obtained test data.
-
-**END OF TEMPLATE**
-
-TESTS ADMINISTERED:
-
-`r list_of_tests$actual_test[1]` (`r list_of_tests$test_name[1]`)
-`r list_of_tests$actual_test[2]` (`r list_of_tests$test_name[2]`)
-`r list_of_tests$actual_test[3]` (`r list_of_tests$test_name[3]`)
-`r list_of_tests$actual_test[4]` (`r list_of_tests$test_name[4]`)
-`r list_of_tests$actual_test[5]` (`r list_of_tests$test_name[5]`)
-`r list_of_tests$actual_test[6]` (`r list_of_tests$test_name[6]`)
-`r list_of_tests$actual_test[7]` (`r list_of_tests$test_name[7]`)
-`r list_of_tests$actual_test[8]` (`r list_of_tests$test_name[8]`)
-`r list_of_tests$actual_test[9]` (`r list_of_tests$test_name[9]`)
-`r list_of_tests$actual_test[10]` (`r list_of_tests$test_name[10]`)
-
-**FROM TEMPLATE**
-
-SUMMARY & IMPRESSIONS: 
-Ms. * is a [#]-year-old, [right/left/ambidextrous]-handed, [marital status], [ethnicity], [bilingual status if applicable] woman with [#] years of education. The patient presented with subjective complaints of [gradually progressive] declines/difficulties in [cognitive domains] with an insidious [or abrupt, gradual, etc] onset approximately [#] years ago. Her medical history is remarkable for [List salient medical factors] [Neuroimaging summary] [Summary of Labs if available] [One sentence of functional abilities (i.e., preserved, declines, safety risks?)].
-
-Consistent with behavioral observations, performance validity testing suggested that the following results are a valid estimate of the patient’s current cognitive functioning. [If evidence of poor effort - The patient performed mildly below expectation on a single embedded validity measure (CVLT FC = 13/16), suggesting the possibility of variable test engagement. As a result, it is possible that the test results may slightly underestimate her neurocognitive ability in some areas.] Intellectual functions assessed by administered subtests of the WAIS-IV indicated overall average general intelligence (FSIQ=xx, xx percentile). Specifically, verbal reasoning and acquired knowledge skills were average (VCI = XXX, XX percentile) and nonverbal perceptual reasoning skills were high average (PRI = XXX, XX percentile). Based on a single-word reading test, it is estimated that her baseline intellectual functioning was in the [low average, average, high average, superior] range. 
-
-The patient’s neuropsychological profile was characterized by XXX. Simple auditory attention was XX, while working memory was XX. Information processing speed was within/below expectation for her age. Frontal “executive” abilities varied/were intact/emerged as an area of XX within her profile. Verbal and non-verbal abstract reasoning were XX. Set-shifting was XX, while prepotent response inhibition was XX. Her approach to copy a complex geometric figure was characterized by poor/fair/good organization and planning. Performance on a novel problem-solving task was intact with minimal evidence of perseveration. Verbal fluency to target letter categories was XX. Semantic verbal fluency was XX. Confrontation naming was XX with mild/moderate benefit from the provision of phonemic cues observed. Visual integration was XX. Memory processing was intact/variable. Encoding, retention, and recognition of contextual verbal information (i.e., stories) XXX. Encoding of non-contextual verbal information (i.e., word lists) was XX, while retention and retrieval of this information was XX. Encoding of simple line drawings was XX, while retention and recognition of this information was XX. The patient’s ability to replicate a complex geometric figure following an immediate-delay was XX and was XX following a long-delay. Recognition of individual elements of this complex figure was XX. She reported XX depression and XX anxiety on self-report measures of mood/affect.    
-
-***[If underwent previous evaluation] Compared to the previous neuropsychological assessment in XX of XX, Ms. * demonstrated XXX. Mild to clinically significant declines were observed in XXX. Conversely, significant improvements were observed in XXX. In general, depression and anxiety remain stable at XXX levels.
-
-The patient currently meets DSM-5 diagnostic criteria for Mild/Major Neurocognitive Disorder/ as she is demonstrating objective relative weaknesses and deficits in multiple cognitive domains in the context of reportedly preserved functional abilities. The patient also meets DSM-5 diagnostic criteria for XX (e.g., an Unspecified Depressive Disorder (mild).
- [or]
-The patient does not meet DSM-5 diagnostic criteria for a neurocognitive disorder at this time. [or] While Ms. * is exhibiting declines in some areas of neuropsychological functioning, she does not meet criteria for a neurocognitive disorder at this time. [add diagnoses of MDD or any other psychiatric condition here]
-
-[or]
-
-The patient meets DSM-5 diagnostic criteria for Attention-Deficit/Hyperactivity Disorder, [combined presentation, predominantly inattentive type, etc] (F90.2). The patient also meets DSM-5 diagnostic criteria for….
-
-[Discuss etiological considerations] 
-The etiology for the patient’s pattern of weaknesses/deficits and clinical presentation is most consistent with XXX / is likely multifactorial with contribution from XX, XX, and XX….
-[OR]
-
-The most proximate factors accounting for her subjective experience of cognitive difficulties during daily functioning is suspected to be ….
-
-[OR]
-
-Taken together, the patient’s cognitive profile, which was suggestive of weaknesses in attention and frontal systems, combined with her self-reported longstanding history of attentional difficulties and related functional impairment is consistent with a diagnosis of Attention-Deficit/Hyperactivity Disorder, predominately inattentive presentation.
-
-[OR]
-
-Overall, the patient presents with a pattern of well-preserved neurocognitive functioning commensurate with premorbid estimates. The current results are not suggestive of focal cortical dysfunction, amnestic memory disturbance, or the early stages of a neurodegenerative process.
-
-
-`r if(diagnosis_etiology == "ADHD"){
-Taken together, the patient’s cognitive profile, which was suggestive of weaknesses in attention and frontal systems, combined with her self-reported longstanding history of attentional difficulties and related negative impact on daily activities (i.e., academic and work performance) is consistent with a diagnosis of Attention-Deficit/Hyperactivity Disorder, predominately inattentive presentation. Notably, the patient’s cognitive weaknesses were most salient on tasks integrating both basic attention and other layers of cognitive demand (i.e., processing speed, executive function). As such, Ms. *’s attentional difficulties are likely to be most apparent with greater environmental demand and complexity. It is also important to note that the demands of her daily environment likely far outweigh that of the current testing conditions (i.e., quiet, highly structured, and free of distractions) meaning that the current results may not fully capture the extend of her cognitive difficulties during day-to-day functioning.
-
-Many of Ms. *’s subjective cognitive complaints and objective test findings are consistent with her reported history of ADHD; however, her existing weaknesses in attention are likely exacerbated by both the independent and compounding effects of several other factors, including untreated OSA and poor sleep quality, moderate to severe chronic pain, depression and anxiety, and history of TBI.
-
-Mood – The most proximate factors accounting for her subjective experience of cognitive difficulties during daily functioning is suspected to be her current levels of depression and anxiety, as well as occasional sleep disturbance/insomnia. In the context of ongoing mood disturbance, mild fronto-subcortical dysfunction would be expected, and can often manifest in reduced cognitive efficiency and disruptions in executive control during daily life. As such, the patient is strongly encouraged to continue pharmacological treatment for mood symptoms in addition to resuming psychotherapy, as reductions in psychiatric distress will likely lead to improvements in overall functioning, including cognition. 
-
-[if somatic profile and abuse history, particularly if supported by MMPI, could add something like: Given the patient’s report of childhood trauma and chronic stress, she may also be prone to experiencing somatic symptoms in times of distress, which may further account for some of her experienced cognitive difficulties and other physiological symptoms.]
-
-The patient’s current levels of anxiety and stress may also exacerbate areas of cognitive weakness. The patient may benefit from resuming mental health treatment, including participation in individual psychotherapy, as this may lead to improvements in overall well-being and cognitive functioning. 
-
-She also reported mildly depressed mood which can attenuate cognitive function. While this would not account for the severity or overall pattern of Ms. *’s cognitive difficulties, this should still be considered an important area of treatment focus for optimizing functioning and quality of life.
-
-Ms. *'s current level of depression may have negatively affected her performance on the current assessment, but alone would not account for the pattern of cognitive declines observed. 
-
-There is no evidence of a contributory psychiatric condition. 
-
-Alzheimer’s disease - The pattern of low scores in language/memory/visuospatial ability, with subjective reports of insidious progressive declines in memory for # years, raises some concern for the very early stages of a neurodegenerative condition, with Alzheimer’s disease being a primary etiological consideration. This is also supported by neuroimaging findings indicating XX and the patient’s known ApoE genotype.
-
-Vascular etiology – The pattern of weaknesses in attention, processing speed, and executive functioning combined with medical history significant for multiple cerebrovascular risk factors and neuroimaging studies showing moderate chronic small vessel ischemic changes, suggests a primary vascular etiology. [OR] Given the absence of changes in attention, processing speed, and executive function with only stable, mild ischemic changes seen on MRI, there is not likely a significant vascular contribution at this time. 
-
-AD plus vascular - Taken together, the etiology for Ms. *’s cognitive decline may be best characterized as a “probable mixed dementia” with likely contribution from both AD and vascular burden.
-
-Obstructive sleep apnea (OSA) – The patient’s currently untreated OSA is a primary factor suspected to be adversely affecting cognitive functioning. Reduced oxygen saturation levels due to apneic episodes during sleep may be disrupting optimal sleep architecture and resulting in cognitive difficulties during daily functioning, likely to manifest as executive dysfunction and short-term memory difficulties.
-} else(if diagnosis_etiology == "Primary Progressive Aphasia"){
-
-}
-`
-
-**END OF TEMPLATE**
+`r administered_tests`
 
 # NEUROPSYCHOLOGICAL SUMMARY SCORE SHEET
 
@@ -759,4 +139,53 @@ compare_plot(
   population_sd = 3,
   patient_score = 12
 )
+```
+
+```{r, echo = FALSE, eval = TRUE}
+premorbid |>
+  gt() |>
+  tab_header(
+    title = "Premorbid Functioning"
+    ) |>
+    opt_align_table_header(
+      align = "left"
+      ) |>
+    cols_align(
+      align = "center",
+      columns = -Test
+    )
+```
+
+```{r}
+perf_validity |>
+  gt() |>
+  tab_header(
+    title = "Performance Validity"
+    ) |>
+    opt_align_table_header(
+      align = "left"
+      ) |>
+    cols_align(
+      align = "center",
+      columns = -Test
+    )
+```
+
+```{r}
+general_intellectual |>
+  gt() |>
+  tab_header(
+    title = "Performance Validity"
+    ) |>
+    opt_align_table_header(
+      align = "left"
+      ) |>
+    cols_align(
+      align = "center",
+      columns = -Test
+    )
+```
+
+```{r}
+attention 
 ```
