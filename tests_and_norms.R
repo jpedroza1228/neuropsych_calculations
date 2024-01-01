@@ -425,26 +425,3 @@ compare_plot <- function(
   }
 }
 
-premorbid <- tibble(
-  Test = "TOPF",
-  Raw =  raw_topf,
-  `Standard Score` = standard_topf,
-  Percentile = percentile_topf
-  )
-
-perf_validity <- tibble(
-  Test = c("CVLT-II FC", "RDS", "TOMM Trial 1", "TOMM Trial 2"),
-  Score = c(score_cvlt_ii_fc, score_rds, tomm_trial_1, tomm_trial_2),
-  Total = c(total_cvlt_ii_fc, NA_real_, NA_real_, NA_real_)
-)
-
-general_intellectual <- tibble(
-  Test = c("Similarities (SI)", "Information (IN)", "Vocabulary (VC)", "Block Design (BD)", "Matrix Reasoning (MR)", "Visual Puzzles (VP)", "Digit Span (DS)", "Arithmetic (AR)", "Symbol S (SS)", "Coding (CO)"),
-  Raw = c(raw_similarities, raw_information, raw_vocab, raw_block_design, raw_matrix_reason, raw_visual_puzzle, raw_digit_span, raw_arithmetic, raw_symbol_s, raw_coding),
-  ACSS = c(acss_similarities, acss_information, acss_vocab, acss_block_design, acss_matrix_reason, acss_visual_puzzle, acss_digit_span, acss_arithmetic, acss_symbol_s, acss_coding),
-  Percentile = c(percentile_similarities, percentile_information, percentile_vocab, percentile_block_design, percentile_matrix_reason, percentile_visual_puzzle, percentile_digit_span, percentile_arithmetic, percentile_symbol_s, percentile_coding),
-  `Test ` = c("WAIS-IV VCI", "WAIS-IV PRI", "WAIS-IV GAI", "WAIS-IV WMI", "WAIS-IV PSI", "WAIS-IV FSIQ", "", "", "", ""),
-  `Raw ` = c(raw_wais_vcl, raw_wais_pri, raw_wais_gai, raw_wais_wmi, raw_wais_psi, raw_wais_fsiq, NA_real_, NA_real_, NA_real_, NA_real_),
-  `Standard Score` = c(standard_wais_vcl, standard_wais_pri, standard_wais_gai, standard_wais_wmi, standard_wais_psi, standard_wais_fsiq, NA_real_, NA_real_, NA_real_, NA_real_),
-  `Percentile ` = c(percentile_wais_vcl, percentile_wais_pri, percentile_wais_gai, percentile_wais_wmi, percentile_wais_psi, percentile_fsiq, NA_real_, NA_real_, NA_real_, NA_real_)
-)
