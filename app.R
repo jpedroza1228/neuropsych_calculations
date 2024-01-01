@@ -39,6 +39,129 @@ shinyApp(
         textInput("diagnosis_symptoms", "List all the symptoms related to being evaluated."),
         textInput("current_medications", "List medications currently taking. If none write 'not currently taking medication.'"),
         textInput("past_medications", "List medication(s) previously taken."),
+        
+        # test scores
+        textInput("raw_topf", "TOPF score - Raw"),
+        textInput("standard_topf", "TOPF score - Standard"),
+        textInput("percentile_topf", "TOPF score - Percentile"),
+        
+        textInput("score_cvlt_ii_fc", "CVLT-II FC Score"),
+        textInput("total_cvlt_ii_fc", "CVLT-II FC Total Score"),
+        textInput("score_rds", "RDS Score"),
+        textInput("tomm_trial_1", "TOMM Trial 1"),
+        textInput("tomm_trial_2", "TOMM Trial 2"),
+        
+        # Performance Validity
+        score_cvlt_ii_fc <- 16
+        total_cvlt_ii_fc <- 16
+        score_rds <- 11
+        tomm_trial_1 <- 50
+        tomm_trial_2 <- 50
+        
+        textInput("raw_similarities", " Raw"),
+        textInput("raw_information", " Raw"),
+        textInput("raw_vocab", " Raw"),
+        textInput("raw_block_design", " Raw"),
+        textInput("raw_matrix_reason", " Raw"),
+        textInput("raw_visual_puzzle", " Raw"),
+        textInput("raw_digit_span", " Raw"),
+        textInput("raw_arithmetic", " Raw"),
+        textInput("raw_symbol_s", " Raw"),
+        textInput("raw_coding", " Raw"),
+        textInput("raw_wais_vcl", " Raw"),
+        textInput("raw_wais_pri", " Raw"),
+        textInput("raw_wais_gai", " Raw"),
+        textInput("raw_wais_wmi", " Raw"),
+        textInput("raw_wais_psi", " Raw"),
+        textInput("raw_wais_fsiq", " Raw"),
+        
+        # General Intellectual Functioning
+        raw_similarities <- 32
+        raw_information <- 14
+        raw_vocab <- 47
+        raw_block_design <- 34
+        raw_matrix_reason <- 17
+        raw_visual_puzzle <- 19
+        raw_digit_span <- 29
+        raw_arithmetic <- 14
+        raw_symbol_s <- 35
+        raw_coding <- 68
+        raw_wais_vcl <- 36
+        raw_wais_pri <- 30
+        raw_wais_gai <- 66
+        raw_wais_wmi <- 20
+        raw_wais_psi <- 21
+        raw_wais_fsiq <- 107
+        
+        textInput("acss_similarities", " ACSS"),
+        textInput("acss_information", " ACSS"),
+        textInput("acss_vocab", " ACSS"),
+        textInput("acss_block_design", " ACSS"),
+        textInput("acss_matrix_reason", " ACSS"),
+        textInput("acss_visual_puzzle", " ACSS"),
+        textInput("acss_digit_span", " ACSS"),
+        textInput("acss_arithmetic", " ACSS"),
+        textInput("acss_symbol_s", " ACSS"),
+        textInput("acss_coding", " ACSS"),
+        
+        textInput("standard_wais_vcl", " Standard"),
+        textInput("standard_wais_pri", " Standard"),
+        textInput("standard_wais_gai", " Standard"),
+        textInput("standard_wais_wmi", " Standard"),
+        textInput("standard_wais_psi", " Standard"),
+        textInput("standard_wais_fsiq", " Standard"),
+        
+        acss_similarities <- 14
+        acss_information <- 10
+        acss_vocab <- 12
+        acss_block_design <- 8
+        acss_matrix_reason <- 9
+        acss_visual_puzzle <-13
+        acss_digit_span <- 10
+        acss_arithmetic <- 10
+        acss_symbol_s <- 11
+        acss_coding <- 10
+        
+        standard_wais_vcl <- 110
+        standard_wais_pri <- 100
+        standard_wais_gai <- 105
+        standard_wais_wmi <- 100
+        standard_wais_psi <- 102
+        standard_wais_fsiq <- 104
+        
+        textInput("percentile_similarities", " Percentile"),
+        textInput("percentile_information", " Percentile"),
+        textInput("percentile_vocab", " Percentile"),
+        textInput("percentile_block_design", " Percentile"),
+        textInput("percentile_matrix_reason", " Percentile"),
+        textInput("percentile_visual_puzzle", " Percentile"),
+        textInput("percentile_digit_span", " Percentile"),
+        textInput("percentile_arithmetic", " Percentile"),
+        textInput("percentile_symbol_s", " Percentile"),
+        textInput("percentile_coding", " Percentile"),
+        textInput("percentile_wais_vcl", " Percentile"),
+        textInput("percentile_wais_pri", " Percentile"),
+        textInput("percentile_wais_gai", " Percentile"),
+        textInput("percentile_wais_wmi", " Percentile"),
+        textInput("percentile_wais_psi", " Percentile"),
+        textInput("percentile_fsiq", " Percentile"),
+        
+        percentile_similarities <- 91
+        percentile_information <- 50
+        percentile_vocab <- 75
+        percentile_block_design <- 25
+        percentile_matrix_reason <- 37
+        percentile_visual_puzzle <- 84
+        percentile_digit_span <- 50
+        percentile_arithmetic <- 50
+        percentile_symbol_s <- 63
+        percentile_coding <- 50
+        percentile_wais_vcl <- 75
+        percentile_wais_pri <- 50
+        percentile_wais_gai <- 63
+        percentile_wais_wmi <- 50
+        percentile_wais_psi <- 55
+        percentile_fsiq <- 61
 
         textAreaInput("beginning_symptoms", "Patient's beginning of the symptoms", height = "300px"),
         textAreaInput("hs_college_symptoms", "Patient's symptoms during high school and college", height = "300px"),
