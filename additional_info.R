@@ -36,14 +36,4 @@ examiner3 <- FALSE
 examiner3_name <- ""
 
 
-attention <- tibble(
-  Test = c("WAIS-IV DS", "DS Fwd", "DS Bwd", "DS Seq", "Longest Digit:", ""),
-  Raw = c(raw_wais_ds, raw_ds_fwd, raw_ds_bwd, raw_ds_seq, paste0(longest_fwd, " Fwd", longest_bwd, " Bwd", longest_seq, " Seq"), ""),
-  ACSS = c(acss_wais_ds, acss_ds_fwd, acss_ds_bwd, acss_ds_seq, "", ""),
-  Percentile = c(percentile_wais_ds, percentile_ds_fwd, percentile_ds_bwd, percentile_ds_seq, "", ""),
-  `Test ` = c("WAIS-IV SS", "WAIS-IV CO", "Stroop (Word)", "Stroop (Color)", "Trails A", ""),
-  `Raw ` = c(raw_wais_ss, raw_wais_co, raw_stroop_word, raw_stroop_color, raw_trails_a, ""),
-  `ACSS ` = c(acss_wais_ss, acss_wais_co, t_stroop_word, t_stroop_color, z_trails_a, ""),
-  `Percentile ` = c(percentile_wais_ss, percentile_wais_co, percentile_stroop_word, percentile_stroop_color, percentile_trails_a, ""),
-  Errors = c("", "", error_stroop_word, error_stroop_color, error_trails_a, "")
-)
+
