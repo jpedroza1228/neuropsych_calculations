@@ -289,7 +289,7 @@ params:
 ---
 
 ```{r param to r objects, include = FALSE}
-source("C:/Users/Jonathan/Documents/GitHubRepos/neuropsych_calculations/tests_and_norms.R")
+source(here::here("tests_and_norms.R"))
 
 patient_name <- params$patient_name
 dob <- params$dob
