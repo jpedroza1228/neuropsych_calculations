@@ -410,23 +410,10 @@ shinyApp(
 
     output$report <- downloadHandler(
       # For PDF output, change this to "report.pdf"
-      # filename = "report.docx",
-      # content = function(file) {
-        # Copy the report file to a temporary directory before processing it, in
-        # case we don't have write permissions to the current working dir (which
-        # can happen when deployed).
-       #  tempReport <- file.path(tempdir(), "report.qmd")
-       #  file.copy("report.qmd", tempReport, overwrite = TRUE)
-
+      filename = "report.docx",
+      content = function(file) {
         # Set up parameters to pass to Rmd document
-       # params <- 
-
-        # Knit the document, passing in the `params` list, and eval it in a
-        # child of the global environment (this isolates the code in the document
-        # from the code in this app).
-        quarto::quarto_render(
-          "index.qmd",
-          execute_params = list(
+       params <- list(
         patient_name = input$patient_name,
         dob = input$dob,
         city = input$city,
@@ -693,7 +680,7 @@ shinyApp(
         current_mood = input$current_mood,
         current_sleep = input$current_sleep,
         motor_sensory_functioning = input$motor_sensory_functioning,
-        current = input$current,
+        current_functioning = input$current_functioning,
         medical_history = input$medical_history,
         family_history = input$family_history,
         psychiatric_history = input$psychiatric_history,
@@ -712,9 +699,13 @@ shinyApp(
         summary_impressions = input$summary_impressions,
         academic_accommodations = input$academic_accommodations
           )
-          # envir = new.env(parent = globalenv())
+
+        out <- quarto::quarto_render(
+          "report.qmd",
+          execute_params = params
     )
-      # }
+    file.copy(out, file)
+      }
     )
   }
 )
