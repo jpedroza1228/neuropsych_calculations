@@ -1,7 +1,7 @@
-library(shiny)
 library(tidyverse)
 library(bayestestR)
 library(DT)
+library(gt)
 
 tests <-tibble(
   Test = c(
