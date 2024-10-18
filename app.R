@@ -147,7 +147,7 @@ tests <- tibble::tibble(
     "WAIS-IV",
     "MoCA"
   ),
-  Range = c(
+  `Raw Score Range` = c(
     "40-160",
     "0-30"
   ),
@@ -161,7 +161,47 @@ tests <- tibble::tibble(
   )
 )
 
-# all subtests have scores of mean = 10, sd =3
+# all WAIS-IV subtests have scores of mean = 10, sd =3
+
+# "Beck Anxiety Inventory",
+# "Beck Depression Inventory",
+# "Boston Naming Test",
+# "Brief Visuospatial Memory Test - Revised",
+# "California Verbal Learning Test - II",
+# "Conners' Adult ADHD Rating Scales - Self Report: Long Version",
+# "Conners' Continuous Performance Test - 3rd Edition",
+# "Controlled Oral Word Association Test",
+# "Minnesota Multiphasic Personality Inventory - 2 Restructured Form",
+# "Rey-Osterrieth Complex Figure Test",
+# "Stroop - Word Naming",
+# "Stroop - Color Naming",
+# "Stroop - Colored Word Naming",
+# "Test of Premorbid Function",
+# "Trailmaking Test A",
+# "Trailmaking Test B",
+# "Wechsler Adult Intelligence Scale - 4th Edition",
+# "Wechsler Memory Scale - 4th Edition",
+# "Wisconsin Card Sorting Test"
+
+# "bai",
+# "bdi_ii",
+# "bnt",
+# "bvmt_r",
+# "cvlt_ii",
+# "caars_s_l",
+# "cpt_3",
+# "fas_animals",
+# "mmpi_2_rf",
+# "rocft",
+# "stroop_word",
+# "stroop_color",
+# "stroop_color_word",
+# "topf",
+# "trailmaking_a",
+# "trailmaking_b",
+# "wais_iv",
+# "wms_iv",
+# "wcst"
 
 
 set.seed(12345)
@@ -322,69 +362,79 @@ table_create <- function(
   full_test, 
   population_avg,
   population_variation,
-  individual_score,
+  individual_score1,
+  individual_score2,
   higher_better
   ){
     if(higher_better == "Yes"){
-      z <- (individual_score - population_avg)/population_variation
-      z <- round(z, 2)
+      z1 <- (individual_score1 - population_avg)/population_variation
+      z1 <- round(z1, 2)
 
-      out <- z_table |> dplyr::filter(z_value == z)
+      z2 <- (individual_score2 - population_avg)/population_variation
+      z2 <- round(z2, 2)
+
+      out1 <- z_table |> dplyr::filter(z_value == z1)
+      out2 <- z_table |> dplyr::filter(z_value == z2)
 
       table <- 
         tibble::tibble(
           Scale = dplyr::filter(tests, Test == full_test) |> dplyr::pull(Test),
-          `Population Average` = population_avg,
-          `Individual Raw Score` = individual_score
+          `Individual Raw Score - Time 1` = individual_score1,
+          `Individual Raw Score - Time 2` = individual_score2
         ) |> 
         dplyr::filter(Scale == full_test) |>
         dplyr::mutate(
-          Difference = `Individual Raw Score` - `Population Average`,
-          `Percentile Rank` = out$percentile[[1]],
+          Difference = `Individual Raw Score - Time 1` - `Individual Raw Score - Time 2`,
+          `Percentile Rank` = out1$percentile[[1]],
           `AACN Classification` = dplyr::case_when(
-            out$percentile[1] >= 98 ~ "Exceptionally High Score",
-            out$percentile[1] < 98 & out$percentile[1] >= 91 ~ "Above Average Score",
-            out$percentile[1] < 91 & out$percentile[1] >= 75 ~ "High Average Score",
-            out$percentile[1] < 75 & out$percentile[1] >= 25 ~ "Average Score",
-            out$percentile[1] < 25 & out$percentile[1] >= 9 ~ "Low Average Score",
-            out$percentile[1] < 9 & out$percentile[1] >= 2 ~ "Below Average Score",
-            out$percentile[1] < 2 ~ "Exceptionally Low Score"
+            out1$percentile[1] >= 98 ~ "Exceptionally High Score",
+            out1$percentile[1] < 98 & out1$percentile[1] >= 91 ~ "Above Average Score",
+            out1$percentile[1] < 91 & out1$percentile[1] >= 75 ~ "High Average Score",
+            out1$percentile[1] < 75 & out1$percentile[1] >= 25 ~ "Average Score",
+            out1$percentile[1] < 25 & out1$percentile[1] >= 9 ~ "Low Average Score",
+            out1$percentile[1] < 9 & out1$percentile[1] >= 2 ~ "Below Average Score",
+            out1$percentile[1] < 2 ~ "Exceptionally Low Score"
           )
         ) |>
         dplyr::relocate(
-          Difference, .after = `Individual Raw Score`
+          Difference, .after = `Individual Raw Score - Time 2`
         )
     }
 
     else{
-      z <- (individual_score - population_avg)/population_variation
-      z <- round(z, 2)
-      z <- 1 - z
-    
-      out <- z_table |> dplyr::filter(z_value == z)
-    
+      z1 <- (individual_score1 - population_avg)/population_variation
+      z1 <- round(z1, 2)
+      z1 <- 1 - z1
+
+      z2 <- (individual_score2 - population_avg)/population_variation
+      z2 <- round(z2, 2)
+      z2 <- 1 - z2
+
+      out1 <- z_table |> dplyr::filter(z_value == z1)
+      out2 <- z_table |> dplyr::filter(z_value == z2)
+
       table <- 
         tibble::tibble(
           Scale = dplyr::filter(tests, Test == full_test) |> dplyr::pull(Test),
-          `Population Average` = population_avg,
-          `Individual Raw Score` = individual_score
+          `Individual Raw Score - Time 1` = individual_score1,
+          `Individual Raw Score - Time 2` = individual_score2
         ) |> 
         dplyr::filter(Scale == full_test) |>
         dplyr::mutate(
-          Difference = `Individual Raw Score` - `Population Average`,
-          `Percentile Rank` = out$percentile[1],
+          Difference = `Individual Raw Score - Time 1` - `Individual Raw Score - Time 2`,
+          `Percentile Rank` = out1$percentile[[1]],
           `AACN Classification` = dplyr::case_when(
-            out$percentile[1] >= 98 ~ "Exceptionally High Score",
-            out$percentile[1] < 98 & out$percentile[1] >= 91 ~ "Above Average Score",
-            out$percentile[1] < 91 & out$percentile[1] >= 75 ~ "High Average Score",
-            out$percentile[1] < 75 & out$percentile[1] >= 25 ~ "Average Score",
-            out$percentile[1] < 25 & out$percentile[1] >= 9 ~ "Low Average Score",
-            out$percentile[1] < 9 & out$percentile[1] >= 2 ~ "Below Average Score",
-            out$percentile[1] < 2 ~ "Exceptionally Low Score"
-          ) 
+            out1$percentile[1] >= 98 ~ "Exceptionally High Score",
+            out1$percentile[1] < 98 & out1$percentile[1] >= 91 ~ "Above Average Score",
+            out1$percentile[1] < 91 & out1$percentile[1] >= 75 ~ "High Average Score",
+            out1$percentile[1] < 75 & out1$percentile[1] >= 25 ~ "Average Score",
+            out1$percentile[1] < 25 & out1$percentile[1] >= 9 ~ "Low Average Score",
+            out1$percentile[1] < 9 & out1$percentile[1] >= 2 ~ "Below Average Score",
+            out1$percentile[1] < 2 ~ "Exceptionally Low Score"
+          )
         ) |>
         dplyr::relocate(
-          Difference, .after = `Individual Raw Score`
+          Difference, .after = `Individual Raw Score - Time 2`
         )
     }
 
@@ -407,11 +457,13 @@ shinyApp(
         selectInput("subtests", "Would you like to calculate all of the subtests for the chosen assessment?", selected = "No", choices = c("No", "Yes")),
         numericInput("population_size", "Population size (do not feel inclined to change):", value = 10000, min = 10, max = 100000),
         numericInput("patient_score", "Input the patient's raw score:", value = NULL, min = 0, max = 1000),
+        numericInput("patient_score2", "Include the patient's raw score (if this is a second testing):", value = NULL, min = 0, max = 1000),
         selectInput("custom_population", "Include your own normative average and standard deviation?", selected = "No", choices = c("No", "Yes")),
         numericInput("custom_pop_avg", "Normative average (if applicable):", value = NULL, min = 0, max = 1000),
         numericInput("custom_pop_sd", "Variation around the normative average (if applicable):", value = NULL, min = 0, max = 1000),
         selectInput("higher_better", "A higher score indicates better performance.", selected = "Yes", choices = c("No", "Yes")),
-        actionButton(inputId = "submit_score", label = "Submit"),
+        actionButton("submit_score", "Submit"),
+        downloadButton("download_report", "Generate report"),
         width = 4
       ),
 
@@ -427,8 +479,7 @@ shinyApp(
           
           # Regression-Based Approach
           tabPanel("BETA: Regression-Based Approach to Normative Scoring"
-                   # Add UI elements for regression approach here
-                   # For example:
+                   #DT::dataTableOutput("tests_table")
                    # plotOutput("regression_plot"),
                    # DT::dataTableOutput("regression_table")
           )
@@ -452,7 +503,8 @@ server = function(input, output) {
           full_test = input$test_select, 
           population_avg = input$custom_pop_avg, 
           population_variation = input$custom_pop_sd, 
-          individual_score = input$patient_score,
+          individual_score1 = input$patient_score,
+          individual_score2 = input$patient_score2,
           higher_better = input$higher_better
         )
       } else {
@@ -461,6 +513,7 @@ server = function(input, output) {
           population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
           population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
           individual_score = input$patient_score,
+          individual_score2 = input$patient_score2,
           higher_better = input$higher_better
         )
       }
@@ -505,6 +558,9 @@ server = function(input, output) {
             )[[2]]
         }
       })
+
+      
+
     })
   }
 )
