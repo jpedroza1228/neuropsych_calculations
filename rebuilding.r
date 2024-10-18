@@ -1,60 +1,44 @@
 library(tidyverse)
-library(bayestestR)
-library(DT)
-library(gt)
+library(ggtext)
+library(rstan)
+library(cmdstanr)
+library(bayesplot)
+library(posterior)
 
-tests <-tibble(
-  Test = c(
-    "Box Design"
-    # "Beck Anxiety Inventory",
-    # "Beck Depression Inventory",
-    # "Boston Naming Test",
-    # "Brief Visuospatial Memory Test - Revised",
-    # "California Verbal Learning Test - II",
-    # "Conners' Adult ADHD Rating Scales - Self Report: Long Version",
-    # "Conners' Continuous Performance Test - 3rd Edition",
-    # "Controlled Oral Word Association Test",
-    # "Minnesota Multiphasic Personality Inventory - 2 Restructured Form",
-    # "Rey-Osterrieth Complex Figure Test",
-    # "Stroop - Word Naming",
-    # "Stroop - Color Naming",
-    # "Stroop - Colored Word Naming",
-    # "Test of Premorbid Function",
-    # "Trailmaking Test A",
-    # "Trailmaking Test B",
-    # "Wechsler Adult Intelligence Scale - 4th Edition",
-    # "Wechsler Memory Scale - 4th Edition",
-    # "Wisconsin Card Sorting Test"
-  ),
-  Abbreviation = c(
-    "Box Design"
-    # "bai",
-    # "bdi_ii",
-    # "bnt",
-    # "bvmt_r",
-    # "cvlt_ii",
-    # "caars_s_l",
-    # "cpt_3",
-    # "fas_animals",
-    # "mmpi_2_rf",
-    # "rocft",
-    # "stroop_word",
-    # "stroop_color",
-    # "stroop_color_word",
-    # "topf",
-    # "trailmaking_a",
-    # "trailmaking_b",
-    # "wais_iv",
-    # "wms_iv",
-    # "wcst"
-  ),
-  raw_norm = c(
-    
-  ),
-  raw
-)
+# theme_set(theme_light())
+theme_set(cowplot::theme_cowplot())
 
-  # z-table calculations
+set.seed(12345)
+jp <- 10000
+
+#library(brms)
+
+# data,
+# test_name,
+# subtest = TRUE,
+# subtest_mean,
+# subtest_sd,
+# score,
+# population = c("Clinical", "Nonclinical") #include a filter for different norms
+
+# ages
+seq(18, 90)
+c("No formal education", "Elementary", "Middle School", "High School", "Some college", "Some trade school", "Trade school", "Associate's", "Bachelor", "Master", "Doctorate")
+c("White", "Black/African American", "Hispanic/Latina(o)", "Asian", "Native American/Alaska Native", "Native Hawaiian/Other Pacific Islander", "Multi-racial")
+
+
+tests <- tibble(
+  test_name = c(
+    "Wechsler Adult Intelligence Scale"
+    ),
+  test_abb = c(
+    "WAIS-IV"
+    )
+) 
+
+tests
+
+
 z_scores <- tibble(
     z_score = seq(0, 3.49, .01),
     area = c(
@@ -183,89 +167,71 @@ z_table <- z_table |>
     percentile = area*100
   )
 
-z_calc <- function(
-  data,
-  test_name,
-  subtest = TRUE,
-  subtest_mean,
-  subtest_sd,
-  score,
-  population = c("Clinical", "Nonclinical") #include a filter for different norms
+z_table <- unique(z_table)
+
+z_table <- z_table |>
+  mutate(
+    across(
+      everything(),
+      ~round(.x, 2)
+    )
+  )
+
+z_table
+
+
+
+calculations <- function(
+  population_size = 10000,
+  population_avg,
+  population_variation,
+  individual_score
 ){
 
-  if(subtest == TRUE){
-    test <- {{data}} |> 
-    dplyr::filter(full_name == {{test_name}}) |>
-    dplyr::mutate(
-      subtest_avg = {{subtest_mean}},
-      subtest_sd = {{subtest_sd}}
+  set.seed(12345)
+  data <- tibble::tibble(
+      norm_score = round(rnorm(population_size, population_avg, population_variation), 2)
+  )
+
+  plot <- data |>
+    ggplot2::ggplot(
+      ggplot2::aes(
+        norm_score
+      )
+    ) +
+    ggplot2::geom_histogram(
+      color = "white",
+      fill = "gray70",
+      alpha = .7,
+      bins = 50
+    ) +
+    ggplot2::geom_vline(
+      xintercept = individual_score,
+      linetype = 2,
+      color = "dodgerblue",
+      linewidth = 1.5
+    ) +
+    ggplot2::labs(
+      title = "Patient's Raw Score",
+      subtitle = "Compared to the Population",
+      x = "Raw Scores",
+      y = ""
+    ) +
+    ggplot2::theme(
+    axis.text.y = element_blank()
     )
+    
 
-    z <- ({{score}} - test$subtest_avg)/test$subtest_sd
-    z <- round(z, 2)
-    }
-
-  else{
-    test <- {{data}} |> dplyr::filter(full_name == {{test_name}})
-
-    if(population == "Clinical"){
-    z <- ({{score}} - test$clinical_avg)/test$clinical_sd
-    z <- round(z, 2)
-  }
-
-  else if(population == "Nonclinical"){
-    z <- ({{score}} - test$avg)/test$sd
-    z <- round(z, 2)
-  }
-  }
+  z <- (individual_score - population_avg)/population_variation
+  z <- round(z, 2)
 
   output <- z_table |> dplyr::filter(z_value == z)
 
-  plot <- bayestestR::distribution_normal(
-  n = 10000,
-  mean = 0,
-  sd = 1
-) |>
-tibble::as_tibble() |>
-ggplot2::ggplot(
-  ggplot2::aes(
-    value
-  )
-) +
-ggplot2::geom_histogram(
-  color = "white",
-  fill = "gray70",
-  alpha = .7,
-  bins = 50
-) +
-ggplot2::geom_vline(
-  xintercept = output$z_value[1],
-  linetype = 2,
-  color = "dodgerblue",
-  linewidth = 1.5
-) +
-ggplot2::theme_classic()
-
-  list(
-    paste0("The client's/patient's percentile ranking is ", output$percentile),
-    output,
-    plot
-  )
-}
-
-compare_plot <- function(
-  type = c("line", "area"),
-  population_mean = 0,
-  population_sd = 1,
-  patient_score
-){
-
-  if(type == "line"){
-    bayestestR::distribution_normal(
-    n = 10000,
-    mean = {{population_mean}},
-    sd = {{population_sd}}
-  ) |>
+  z_plot <- bayestestR::distribution_normal(
+    n = population_size,
+    mean = 0,
+    sd = 1
+    ) |>
   tibble::as_tibble() |>
   ggplot2::ggplot(
     ggplot2::aes(
@@ -279,58 +245,83 @@ compare_plot <- function(
     bins = 50
   ) +
   ggplot2::geom_vline(
-    xintercept = {{patient_score}},
+    xintercept = output$z_value[1],
     linetype = 2,
-    linewidth = 1.5,
+    color = "dodgerblue",
+    linewidth = 1.5
+  ) +
+  ggplot2::labs(
+      title = "Patient's Ranking",
+      subtitle = "Compared to the Population",
+      x = "Ranking",
+      y = ""
+    ) +
+  ggplot2::geom_segment(
+    x = -3,
+    xend = 3,
+    y = -10,
+    yend = -10,
+    linejoin = "round",
+    lineend = "round",
+    arrow = arrow(
+      length = unit(.2, "inches")
+    ),
     color = "dodgerblue"
   ) +
-  ggplot2::annotate(
-    geom = "text",
-    label = paste0("Score = ", {{patient_score}}),
-    size = 6,
-    color = "black",
-    x = ({{population_mean}} - {{population_sd}}*3),
-    y = 600
-  ) +
-  ggplot2::theme_classic()
-  }
+  ggplot2::theme(
+    axis.text = element_blank()
+  )
 
-  else if(type == "area"){
-    bayestestR::distribution_normal(
-    n = 10000,
-    mean = {{population_mean}},
-    sd = {{population_sd}}
-  ) |> 
-  tibble::as_tibble() |>
-  ggplot2::ggplot(
-    ggplot2::aes(
-      value
+  return(
+    list(plot, paste0("The patient is ranked ", output$percentile, " in comparison to the population."), output, z_plot)
     )
-  ) +
-  ggplot2::geom_histogram(
-    color = "white",
-    fill = "gray70",
-    alpha = .7,
-    bins = 50
-  ) +
-  ggplot2::annotate(
-    geom = 'rect',
-    fill = 'dodgerblue',
-    alpha = .4,
-    xmin = ({{population_mean}} - {{population_sd}}*4),
-    xmax = {{patient_score}},
-    ymin = 0,
-    ymax = 650
-  ) +
-  ggplot2::annotate(
-    geom = "text",
-    label = paste0("Score = ", {{patient_score}}),
-    size = 6,
-    color = "black",
-    x = ({{population_mean}} - {{population_sd}}*3),
-    y = 600
-  ) +
-  ggplot2::theme_classic()
-  }
 }
 
+calculations(
+  population_avg = 100, 
+  population_variation = 15, 
+  individual_score = 80
+  )[[4]]
+
+
+set.seed(12345)
+  data <- tibble::tibble(
+      norm_score = round(rnorm(10000, 100, 15), 2)
+  )
+
+table_create <- function(
+  full_test, 
+  population_avg,
+  population_variation,
+  individual_score
+  # subtest = TRUE
+  ){
+
+  z <- (individual_score - population_avg)/population_variation
+  z <- round(z, 2)
+
+  output <- z_table |> dplyr::filter(z_value == z)
+
+  table <- 
+    tibble::tibble(
+      Scale = dplyr::filter(tests, Test == full_test) |> pull(Test),
+      `Population Average` = 100,
+      `Individual Raw Score` = 80
+    ) |> 
+    dplyr::mutate(
+      Difference = `Population Average` - `Individual Raw Score`,
+      `Percentile Rank` = output$percentile[[1]]
+    ) |>
+    dplyr::relocate(
+      Difference, .after = `Individual Raw Score`
+    )
+
+  reactable::reactable(table)
+}
+
+table_create(
+  full_test = "Wechsler Adult Intelligence Scale",
+  population_avg = 100,
+  population_variation = 15,
+  individual_score = 80
+) 
