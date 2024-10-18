@@ -1,711 +1,566 @@
+z_scores <- tibble::tibble(
+    z_score = seq(0, 3.49, .01),
+    area = c(
+        .5000, 0.5040,	0.5080,	0.5120,	0.5160,	0.5199,	0.5239,	0.5279,	0.5319,	0.5359,
+0.5398,	0.5438,	0.5478,	0.5517,	0.5557,	0.5596,	0.5636,	0.5675,	0.5714,	0.5753,
+0.5793,	0.5832,	0.5871,	0.5910,	0.5948,	0.5987,	0.6026,	0.6064,	0.6103,	0.6141,
+0.6179,	0.6217,	0.6255,	0.6293,	0.6331,	0.6368,	0.6406,	0.6443,	0.6480,	0.6517,
+0.6554,	0.6591,	0.6628,	0.6664,	0.6700,	0.6736,	0.6772,	0.6808,	0.6844,	0.6879,
+0.6915,	0.6950,	0.6985,	0.7019,	0.7054,	0.7088,	0.7123,	0.7157,	0.7190,	0.7224,
+0.7257,	0.7291,	0.7324,	0.7357,	0.7389,	0.7422,	0.7454,	0.7486,	0.7517,	0.7549,
+0.7580,	0.7611,	0.7642,	0.7673,	0.7704,	0.7734,	0.7764,	0.7794,	0.7823,	0.7852,
+0.7881,	0.7910,	0.7939,	0.7967,	0.7995,	0.8023,	0.8051,	0.8078,	0.8106,	0.8133,
+0.8159,	0.8186,	0.8212,	0.8238,	0.8264,	0.8289,	0.8315,	0.8340,	0.8365,	0.8389,
+0.8413,	0.8438,	0.8461,	0.8485,	0.8508,	0.8531,	0.8554,	0.8577,	0.8599,	0.8621,
+0.8643,	0.8665,	0.8686,	0.8708,	0.8729,	0.8749,	0.8770,	0.8790,	0.8810,	0.8830,
+0.8849,	0.8869,	0.8888,	0.8907,	0.8925,	0.8944,	0.8962,	0.8980,	0.8997,	0.9015,
+0.9032,	0.9049,	0.9066,	0.9082,	0.9099,	0.9115,	0.9131,	0.9147,	0.9162,	0.9177,
+0.9192,	0.9207,	0.9222,	0.9236,	0.9251,	0.9265,	0.9279,	0.9292,	0.9306,	0.9319,
+0.9332,	0.9345,	0.9357,	0.9370,	0.9382,	0.9394,	0.9406,	0.9418,	0.9429,	0.9441,
+0.9452,	0.9463,	0.9474,	0.9484,	0.9495,	0.9505,	0.9515,	0.9525,	0.9535,	0.9545,
+0.9554,	0.9564,	0.9573,	0.9582,	0.9591,	0.9599,	0.9608,	0.9616,	0.9625,	0.9633,
+0.9641,	0.9649,	0.9656,	0.9664,	0.9671,	0.9678,	0.9686,	0.9693,	0.9699,	0.9706,
+0.9713,	0.9719,	0.9726,	0.9732,	0.9738,	0.9744,	0.9750,	0.9756,	0.9761,	0.9767,
+0.9772,	0.9778,	0.9783,	0.9788,	0.9793,	0.9798,	0.9803,	0.9808,	0.9812,	0.9817,
+0.9821,	0.9826,	0.9830,	0.9834,	0.9838,	0.9842,	0.9846,	0.9850,	0.9854,	0.9857,
+0.9861,	0.9864,	0.9868,	0.9871,	0.9875,	0.9878,	0.9881,	0.9884,	0.9887,	0.9890,
+0.9893,	0.9896,	0.9898,	0.9901,	0.9904,	0.9906,	0.9909,	0.9911,	0.9913,	0.9916,
+0.9918,	0.9920,	0.9922,	0.9925,	0.9927,	0.9929,	0.9931,	0.9932,	0.9934,	0.9936,
+0.9938,	0.9940,	0.9941,	0.9943,	0.9945,	0.9946,	0.9948,	0.9949,	0.9951,	0.9952,
+0.9953,	0.9955,	0.9956,	0.9957,	0.9959,	0.9960,	0.9961,	0.9962,	0.9963,	0.9964,
+0.9965,	0.9966,	0.9967,	0.9968,	0.9969,	0.9970,	0.9971,	0.9972,	0.9973,	0.9974,
+0.9974,	0.9975,	0.9976,	0.9977,	0.9977,	0.9978,	0.9979,	0.9979,	0.9980,	0.9981,
+0.9981,	0.9982,	0.9982,	0.9983,	0.9984,	0.9984,	0.9985,	0.9985,	0.9986,	0.9986,
+0.9987,	0.9987,	0.9987,	0.9988,	0.9988,	0.9989,	0.9989,	0.9989,	0.9990,	0.9990,
+0.9990,	0.9991,	0.9991,	0.9991,	0.9992,	0.9992,	0.9992,	0.9992,	0.9993,	0.9993,
+0.9993,	0.9993,	0.9994,	0.9994,	0.9994,	0.9994,	0.9994,	0.9995,	0.9995,	0.9995,
+0.9995,	0.9995,	0.9995,	0.9996,	0.9996,	0.9996,	0.9996,	0.9996,	0.9996,	0.9997,
+0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9997,	0.9998
+    ),
+    z_score_neg = seq(0, -3.49, -.01),
+    area_neg = c(
+        0.5000,	0.4960,	0.4920,	0.4880,	0.4840,	0.4801,	0.4761,	0.4721,	0.4681,	0.4641,
+0.4602,	0.4562,	0.4522,	0.4483,	0.4443,	0.4404,	0.4364,	0.4325,	0.4286,	0.4247,
+0.4207,	0.4168,	0.4129,	0.4090,	0.4052,	0.4013,	0.3974,	0.3936,	0.3897,	0.3859,
+0.3821,	0.3783,	0.3745,	0.3707,	0.3669,	0.3632,	0.3594,	0.3557,	0.3520,	0.3483,
+0.3446,	0.3409,	0.3372,	0.3336,	0.3300,	0.3264,	0.3228,	0.3192,	0.3156,	0.3121,
+0.3085,	0.3050,	0.3015,	0.2981,	0.2946,	0.2912,	0.2877,	0.2843,	0.2810,	0.2776,
+0.2743,	0.2709,	0.2676,	0.2643,	0.2611,	0.2578,	0.2546,	0.2514,	0.2483,	0.2451,
+0.2420,	0.2389,	0.2358,	0.2327,	0.2296,	0.2266,	0.2236,	0.2206,	0.2177,	0.2148,
+0.2119,	0.2090,	0.2061,	0.2033,	0.2005,	0.1977,	0.1949,	0.1922,	0.1894,	0.1867,
+0.1841,	0.1814,	0.1788,	0.1762,	0.1736,	0.1711,	0.1685,	0.1660,	0.1635,	0.1611,
+0.1587,	0.1562,	0.1539,	0.1515,	0.1492,	0.1469,	0.1446,	0.1423,	0.1401,	0.1379,
+0.1357,	0.1335,	0.1314,	0.1292,	0.1271,	0.1251,	0.1230,	0.1210,	0.1190,	0.1170,
+0.1151,	0.1131,	0.1112,	0.1093,	0.1075,	0.1056,	0.1038,	0.1020,	0.1003,	0.0985,
+0.0968,	0.0951,	0.0934,	0.0918,	0.0901,	0.0885,	0.0869,	0.0853,	0.0838,	0.0823,
+0.0808,	0.0793,	0.0778,	0.0764,	0.0749,	0.0735,	0.0721,	0.0708,	0.0694,	0.0681,
+0.0668,	0.0655,	0.0643,	0.0630,	0.0618,	0.0606,	0.0594,	0.0582,	0.0571,	0.0559,
+0.0548,	0.0537,	0.0526,	0.0516,	0.0505,	0.0495,	0.0485,	0.0475,	0.0465,	0.0455,
+0.0446,	0.0436,	0.0427,	0.0418,	0.0409,	0.0401,	0.0392,	0.0384,	0.0375,	0.0367,
+0.0359,	0.0351,	0.0344,	0.0336,	0.0329,	0.0322,	0.0314,	0.0307,	0.0301,	0.0294,
+0.0287,	0.0281,	0.0274,	0.0268,	0.0262,	0.0256,	0.0250,	0.0244,	0.0239,	0.0233,
+0.0228,	0.0222,	0.0217,	0.0212,	0.0207,	0.0202,	0.0197,	0.0192,	0.0188,	0.0183,
+0.0179,	0.0174,	0.0170,	0.0166,	0.0162,	0.0158,	0.0154,	0.0150,	0.0146,	0.0143,
+0.0139,	0.0136,	0.0132,	0.0129,	0.0125,	0.0122,	0.0119,	0.0116,	0.0113,	0.0110,
+0.0107,	0.0104,	0.0102,	0.0099,	0.0096,	0.0094,	0.0091,	0.0089,	0.0087,	0.0084,
+0.0082,	0.0080,	0.0078,	0.0075,	0.0073,	0.0071,	0.0069,	0.0068,	0.0066,	0.0064,
+0.0062,	0.0060,	0.0059,	0.0057,	0.0055,	0.0054,	0.0052,	0.0051,	0.0049,	0.0048,
+0.0047,	0.0045,	0.0044,	0.0043,	0.0041,	0.0040,	0.0039,	0.0038,	0.0037,	0.0036,
+0.0035,	0.0034,	0.0033,	0.0032,	0.0031,	0.0030,	0.0029,	0.0028,	0.0027,	0.0026,
+0.0026,	0.0025,	0.0024,	0.0023,	0.0023,	0.0022,	0.0021,	0.0021,	0.0020,	0.0019,
+0.0019,	0.0018,	0.0018,	0.0017,	0.0016,	0.0016,	0.0015,	0.0015,	0.0014,	0.0014,
+0.0013,	0.0013,	0.0013,	0.0012,	0.0012,	0.0011,	0.0011,	0.0011,	0.0010,	0.0010,
+0.0010,	0.0009,	0.0009,	0.0009,	0.0008,	0.0008,	0.0008,	0.0008,	0.0007,	0.0007,
+0.0007,	0.0007,	0.0006,	0.0006,	0.0006,	0.0006,	0.0006,	0.0005,	0.0005,	0.0005,
+0.0005,	0.0005,	0.0005,	0.0004,	0.0004,	0.0004,	0.0004,	0.0004,	0.0004,	0.0003,
+0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0003,	0.0002
+    )
+)
+
+z_table <- z_scores |> 
+  tidyr::pivot_longer(
+      cols = c(area, area_neg),
+      names_to = "z_values",
+      values_to = "area"
+  ) |>
+  tidyr::pivot_longer(
+      cols = c(z_score, z_score_neg), 
+      names_to = "z_scores", 
+      values_to = "actual_z"
+  ) |>
+  dplyr::select(
+    -c(
+      z_values,
+      z_scores
+    )
+  ) |>
+  dplyr::rename(
+    z_value = actual_z
+  ) |>
+  dplyr::relocate(
+    area, 2
+  )
+
+z_table <- z_table |> 
+  dplyr::mutate(
+    condition = dplyr::case_when(
+      (z_value < 0 & area > .5) ~ "drop",
+      (z_value > 0 & area < .5) ~ "drop",
+      (z_value < 0 & area < .5) ~ "keep",
+      (z_value > 0 & area > .5) ~ "keep",
+      (z_value == 0 & area == .5) ~ "keep" 
+    )
+  ) |>
+  dplyr::filter(
+    condition != "drop"
+    ) |>
+  dplyr::select(
+    -condition
+  )
+
+z_table <- z_table |>
+  dplyr::relocate(
+    area, .after = z_value
+  ) |>
+  dplyr::mutate(
+    percentile = area*100
+  )
+
+z_table <- unique(z_table)
+
+z_table <- z_table |>
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::everything(),
+      ~round(.x, 2)
+    )
+  )
+
+ggplot2::theme_set(cowplot::theme_cowplot())
+
 tests <- tibble::tibble(
   Test = c(
-    "Beck Anxiety Inventory",
-    "Beck Depression Inventory",
-    "Boston Naming Test",
-    "Brief Visuospatial Memory Test - Revised",
-    "California Verbal Learning Test - II",
-    "Conners' Adult ADHD Rating Scales - Self Report: Long Version",
-    "Conners' Continuous Performance Test - 3rd Edition",
-    "Controlled Oral Word Association Test",
-    "Minnesota Multiphasic Personality Inventory - 2 Restructured Form",
-    "Rey-Osterrieth Complex Figure Test",
-    "Stroop - Word Naming",
-    "Stroop - Color Naming",
-    "Stroop - Colored Word Naming",
-    "Test of Premorbid Function",
-    "Trailmaking Test A",
-    "Trailmaking Test B",
     "Wechsler Adult Intelligence Scale - 4th Edition",
-    "Wechsler Memory Scale - 4th Edition",
-    "Wisconsin Card Sorting Test"
+    "Montreal Cognitive Assessment"
   ),
   Abbreviation = c(
-    "bai",
-    "bdi_ii",
-    "bnt",
-    "bvmt_r",
-    "cvlt_ii",
-    "caars_s_l",
-    "cpt_3",
-    "fas_animals",
-    "mmpi_2_rf",
-    "rocft",
-    "stroop_word",
-    "stroop_color",
-    "stroop_color_word",
-    "topf",
-    "trailmaking_a",
-    "trailmaking_b",
-    "wais_iv",
-    "wms_iv",
-    "wcst"
+    "WAIS-IV",
+    "MoCA"
+  ),
+  `Raw Score Range` = c(
+    "40-160",
+    "0-30"
+  ),
+  `Normative Average` = c(
+    100,
+    23.36
+  ),
+  `Normative Variation` = c(
+    15,
+    3.99
   )
 )
 
-tests <- tests |>
-  dplyr::mutate(
-    subtest = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Similarities",
-      TRUE ~ NA_character_
-    ),
-    subtest2 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Vocabulary",
-      TRUE ~ NA_character_
-    ),
-    subtest3 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Information",
-      TRUE ~ NA_character_
-    ),
-    subtest4 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Digit Span",
-      TRUE ~ NA_character_
-    ),
-    subtest5 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Arithmetic",
-      TRUE ~ NA_character_
-    ),
-    subtest6 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Block Design",
-      TRUE ~ NA_character_
-    ),
-    subtest7 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Matrix Reasoning",
-      TRUE ~ NA_character_
-    ),
-    subtest8 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Visual Puzzles",
-      TRUE ~ NA_character_
-    ),
-    subtest9 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Coding",
-      TRUE ~ NA_character_
-    ),
-    subtest10 = dplyr::case_when(
-      Abbreviation == "wais_iv" ~ "Symbol Search",
-      TRUE ~ NA_character_
-    )
+# all WAIS-IV subtests have scores of mean = 10, sd =3
+
+# "Beck Anxiety Inventory",
+# "Beck Depression Inventory",
+# "Boston Naming Test",
+# "Brief Visuospatial Memory Test - Revised",
+# "California Verbal Learning Test - II",
+# "Conners' Adult ADHD Rating Scales - Self Report: Long Version",
+# "Conners' Continuous Performance Test - 3rd Edition",
+# "Controlled Oral Word Association Test",
+# "Minnesota Multiphasic Personality Inventory - 2 Restructured Form",
+# "Rey-Osterrieth Complex Figure Test",
+# "Stroop - Word Naming",
+# "Stroop - Color Naming",
+# "Stroop - Colored Word Naming",
+# "Test of Premorbid Function",
+# "Trailmaking Test A",
+# "Trailmaking Test B",
+# "Wechsler Adult Intelligence Scale - 4th Edition",
+# "Wechsler Memory Scale - 4th Edition",
+# "Wisconsin Card Sorting Test"
+
+# "bai",
+# "bdi_ii",
+# "bnt",
+# "bvmt_r",
+# "cvlt_ii",
+# "caars_s_l",
+# "cpt_3",
+# "fas_animals",
+# "mmpi_2_rf",
+# "rocft",
+# "stroop_word",
+# "stroop_color",
+# "stroop_color_word",
+# "topf",
+# "trailmaking_a",
+# "trailmaking_b",
+# "wais_iv",
+# "wms_iv",
+# "wcst"
+
+
+set.seed(12345)
+calculations <- function(
+  population_size,
+  population_avg,
+  population_variation,
+  individual_score,
+  higher_better
+){
+
+  set.seed(12345)
+  data <- tibble::tibble(
+      norm_score = round(rnorm(population_size, population_avg, population_variation), 2)
   )
+
+  plot <- data |>
+    ggplot2::ggplot(
+      ggplot2::aes(
+        norm_score
+      )
+    ) +
+    ggplot2::geom_histogram(
+      color = "white",
+      fill = "gray70",
+      alpha = .7,
+      bins = 50
+    ) +
+    ggplot2::geom_vline(
+      xintercept = individual_score,
+      linetype = 2,
+      color = "dodgerblue",
+      linewidth = 1.5
+    ) +
+    ggplot2::labs(
+      title = "Patient's Raw Score",
+      subtitle = "Compared to the Population",
+      x = "Raw Scores",
+      y = ""
+    ) +
+    ggplot2::theme(
+    axis.text.y = ggplot2::element_blank()
+    )
+
+    if(higher_better == "Yes"){
+        z <- (individual_score - population_avg)/population_variation
+        z <- round(z, 2)
+
+        out <- z_table |> dplyr::filter(z_value == z)
+
+        z_plot <- bayestestR::distribution_normal(
+          n = population_size,
+          mean = 0,
+          sd = 1
+          ) |>
+        tibble::as_tibble() |>
+        ggplot2::ggplot(
+          ggplot2::aes(
+            value
+          )
+        ) +
+        ggplot2::geom_histogram(
+          color = "white",
+          fill = "gray70",
+          alpha = .7,
+          bins = 50
+        ) +
+        ggplot2::geom_vline(
+          xintercept = out$z_value[1],
+          linetype = 2,
+          color = "dodgerblue",
+          linewidth = 1.5
+        ) +
+        ggplot2::labs(
+            title = glue::glue("Patient's Ranking is {out$percentile[1]}"),
+            subtitle = "When compared to the population",
+            x = "Z-Scores",
+            y = ""
+          ) +
+        ggplot2::geom_segment(
+          x = -3,
+          xend = 3,
+          y = -10,
+          yend = -10,
+          linejoin = "round",
+          lineend = "round",
+          arrow = grid::arrow(
+            length = grid::unit(.2, "inches")
+          ),
+          color = "dodgerblue"
+        ) +
+        ggplot2::theme(
+          axis.text = ggplot2::element_blank()
+        )
+    }
+    else{
+      z <- (individual_score - population_avg)/population_variation
+      z <- round(z, 2)
+      z <- 1 - z
+
+      out <- z_table |> dplyr::filter(z_value == z)
+
+      z_plot <- bayestestR::distribution_normal(
+        n = population_size,
+        mean = 0,
+        sd = 1
+        ) |>
+      tibble::as_tibble() |>
+      ggplot2::ggplot(
+        ggplot2::aes(
+          value
+        )
+      ) +
+      ggplot2::geom_histogram(
+        color = "white",
+        fill = "gray70",
+        alpha = .7,
+        bins = 50
+      ) +
+      ggplot2::geom_vline(
+        xintercept = out$z_value[1],
+        linetype = 2,
+        color = "dodgerblue",
+        linewidth = 1.5
+      ) +
+      ggplot2::labs(
+          title = glue::glue("Patient's Ranking is {out$percentile[1]}"),
+          subtitle = "When compared to the population",
+          x = "Z-Scores",
+          y = ""
+        ) +
+      ggplot2::geom_segment(
+        x = 3,
+        xend = -3,
+        y = -10,
+        yend = -10,
+        linejoin = "round",
+        lineend = "round",
+        arrow = grid::arrow(
+          length = grid::unit(.2, "inches")
+        ),
+        color = "dodgerblue"
+      ) +
+      ggplot2::theme(
+        axis.text = ggplot2::element_blank()
+      )
+    }
+    
+  return(
+    list(
+      plot,
+      z_plot
+      )
+    )
+}
+
+table_create <- function(
+  full_test, 
+  population_avg,
+  population_variation,
+  individual_score1,
+  individual_score2,
+  higher_better
+  ){
+    if(higher_better == "Yes"){
+      z1 <- (individual_score1 - population_avg)/population_variation
+      z1 <- round(z1, 2)
+
+      z2 <- (individual_score2 - population_avg)/population_variation
+      z2 <- round(z2, 2)
+
+      out1 <- z_table |> dplyr::filter(z_value == z1)
+      out2 <- z_table |> dplyr::filter(z_value == z2)
+
+      table <- 
+        tibble::tibble(
+          Scale = dplyr::filter(tests, Test == full_test) |> dplyr::pull(Test),
+          `Individual Raw Score - Time 1` = individual_score1,
+          `Individual Raw Score - Time 2` = individual_score2
+        ) |> 
+        dplyr::filter(Scale == full_test) |>
+        dplyr::mutate(
+          Difference = `Individual Raw Score - Time 1` - `Individual Raw Score - Time 2`,
+          `Percentile Rank` = out1$percentile[[1]],
+          `AACN Classification` = dplyr::case_when(
+            out1$percentile[1] >= 98 ~ "Exceptionally High Score",
+            out1$percentile[1] < 98 & out1$percentile[1] >= 91 ~ "Above Average Score",
+            out1$percentile[1] < 91 & out1$percentile[1] >= 75 ~ "High Average Score",
+            out1$percentile[1] < 75 & out1$percentile[1] >= 25 ~ "Average Score",
+            out1$percentile[1] < 25 & out1$percentile[1] >= 9 ~ "Low Average Score",
+            out1$percentile[1] < 9 & out1$percentile[1] >= 2 ~ "Below Average Score",
+            out1$percentile[1] < 2 ~ "Exceptionally Low Score"
+          )
+        ) |>
+        dplyr::relocate(
+          Difference, .after = `Individual Raw Score - Time 2`
+        )
+    }
+
+    else{
+      z1 <- (individual_score1 - population_avg)/population_variation
+      z1 <- round(z1, 2)
+      z1 <- 1 - z1
+
+      z2 <- (individual_score2 - population_avg)/population_variation
+      z2 <- round(z2, 2)
+      z2 <- 1 - z2
+
+      out1 <- z_table |> dplyr::filter(z_value == z1)
+      out2 <- z_table |> dplyr::filter(z_value == z2)
+
+      table <- 
+        tibble::tibble(
+          Scale = dplyr::filter(tests, Test == full_test) |> dplyr::pull(Test),
+          `Individual Raw Score - Time 1` = individual_score1,
+          `Individual Raw Score - Time 2` = individual_score2
+        ) |> 
+        dplyr::filter(Scale == full_test) |>
+        dplyr::mutate(
+          Difference = `Individual Raw Score - Time 1` - `Individual Raw Score - Time 2`,
+          `Percentile Rank` = out1$percentile[[1]],
+          `AACN Classification` = dplyr::case_when(
+            out1$percentile[1] >= 98 ~ "Exceptionally High Score",
+            out1$percentile[1] < 98 & out1$percentile[1] >= 91 ~ "Above Average Score",
+            out1$percentile[1] < 91 & out1$percentile[1] >= 75 ~ "High Average Score",
+            out1$percentile[1] < 75 & out1$percentile[1] >= 25 ~ "Average Score",
+            out1$percentile[1] < 25 & out1$percentile[1] >= 9 ~ "Low Average Score",
+            out1$percentile[1] < 9 & out1$percentile[1] >= 2 ~ "Below Average Score",
+            out1$percentile[1] < 2 ~ "Exceptionally Low Score"
+          )
+        ) |>
+        dplyr::relocate(
+          Difference, .after = `Individual Raw Score - Time 2`
+        )
+    }
+
+  DT::datatable(table, selection = 'single', options=list(scrollX=TRUE))
+}
 
 # shiny app below this
 library(shiny)
 
 shinyApp(
   ui = fluidPage(
-    title = "Template Creation for Neuropsychology Patient Reports",
+    theme = bslib::bs_theme(preset = "flatly"),
+    navbarPage(
+    "Neuropsychology Assessment Table & Plot Creator",
 
+    # Sidebar Layout
     sidebarLayout(
       sidebarPanel(
-        textInput("patient_name", "Patient's Name"),
-        textInput("dob", "Patient's Date of Birth"),
-        textInput("city", "City patient resides in"),
-        textInput("state", "State patient resides in"),
-        textInput("interview_date", "Interview Date (e.g., MM/DD/YYYY)"),
-        textInput("testing_date", "Testing Date (e.g., MM/DD/YYYY)"),
-        textInput("examiner", "Examiner's Name"),
-        textInput("examiner_title", "Examiner's Title"),
-        textInput("examiner_license", "Examiner's License/Fellow Number"),
-        selectInput("examiner2_tf", "Is there a second examiner", choices = c(TRUE, FALSE)),
-        textInput("examiner2", "Second Examiner's Name"),
-        textInput("examiner2_title", "Second Examiner's Title"),
-        textInput("examiner2_license", "Second Examiner's License/Fellow Number"),
-        selectInput("examiner3_tf", "Is there a third examiner", choices = c(TRUE, FALSE)),
-        textInput("examiner3", "Third Examiner's Name"),
-        textInput("examiner3_title", "Third Examiner's Title"),
-        textInput("examiner3_license", "Third Examiner's License/Fellow Number"),
-        selectInput("mr_ms", "Name prefix", choices = c("Mr.", "Ms", "Mrs.", "Dr.")),
-        selectInput("male_female", "Male/Female/Non-binary", choices = c("male", "female", "non-binary")),
-        selectInput("his_her_their", "His/Her/Their", choices = c("his", "her", "their")),
-        selectInput("he_she_they", "He/She/They", choices = c("he", "she", "they")),
-        textInput("patient_age", "Patient's Age"),
-        selectInput("handed", "Right or left-handed", choices = c("right", "left")),
-        selectInput("marital_status", "Patient's marital status", choices = c("single", "married", "widowed", "divorced", "separated")),
-        textInput("race_ethnicity", "Patient's Race/Ethnicity"),
-        selectInput("bilingual", "Is the patient bilingual?", choices = c(TRUE, FALSE)),
-        textInput("years_of_ed", "Years of Education"),
-        selectInput("referred", "Is the patient referred by a doctor?", choices = c(TRUE, FALSE)),
-        textInput("referring_dr", "Referring Doctor's Name (e.g., Dr. Sam I Am)"),
-        selectInput("past_diagnosis_tf", "The patient have a past diagnosis?", choices = c(TRUE, FALSE)),
-        textInput("past_diagnosis", "What is/are the patient's past diagnosis/diagnoses?"),
-        textInput("past_dr_diagnosing", "Past doctor to diagnose previous diagnosis/diagnoses (e.g., pediatrician)"),
-        textInput("age_of_diagnosis", "At what age was the patient diagnosed (e.g., 8-years old)."),
-        textInput("time_of_symptom_concern", "When were the symptoms becoming problematic (i.e., kindergarten)"),
-        textInput("major_medical_issues", "List all the major medical issues (e.g., chronic pain, arthiritis, asthma)"),
-        textInput("diagnosis_symptoms", "List all the symptoms related to being evaluated."),
-        textInput("current_medications", "List medications currently taking. If none write 'not currently taking medication.'"),
-        textInput("past_medications", "List medication(s) previously taken."),
-        
-        # test scores
-        textInput("raw_topf", "TOPF score - Raw"),
-        textInput("standard_topf", "TOPF score - Standard"),
-        textInput("percentile_topf", "TOPF score - Percentile"),
-        textInput("score_cvlt_ii_fc", "CVLT-II FC Score"),
-        textInput("total_cvlt_ii_fc", "CVLT-II FC Total Score"),
-        textInput("score_rds", "RDS Score"),
-        textInput("tomm_trial_1", "TOMM Trial 1"),
-        textInput("tomm_trial_2", "TOMM Trial 2"),
-        textInput("raw_similarities", "Raw Similarities Score"),
-        textInput("acss_similarities", "ACSS Similarities Score"),
-        textInput("percentile_similarities", "Percentile Similarities Score"),
-        textInput("raw_information", "Raw Information Score"),
-        textInput("acss_information", "ACSS Information Score"),
-        textInput("percentile_information", "Percentile Information Score"),
-        textInput("raw_vocab", "Raw Vocab Score"),
-        textInput("acss_vocab", "ACSS Vocab Score"),
-        textInput("percentile_vocab", "Percentile Vocab Score"),
-        textInput("raw_block_design", "Raw Block Design Score"),
-        textInput("acss_block_design", "ACSS Block Design Score"),
-        textInput("percentile_block_design", "Percentile Block Design Score"),
-        textInput("raw_matrix_reason", "Raw Matrix Reasoning Score"),
-        textInput("acss_matrix_reason", "ACSS Matrix Reasoning Score"),
-        textInput("percentile_matrix_reason", "Percentile Matrix Reasoning Score"),
-        textInput("raw_visual_puzzle", "Raw Visual Puzzle Score"),
-        textInput("acss_visual_puzzle", "ACSS Visual Puzzle Score"),
-        textInput("percentile_visual_puzzle", "Percentile Visual Puzzle Score"),
-        textInput("raw_digit_span", "Raw Digit Span Score"),
-        textInput("acss_digit_span", "ACSS Digit Span Score"),
-        textInput("percentile_digit_span", "Percentile Digit Span Score"),
-        textInput("raw_arithmetic", "Raw Arithmetic Score"),
-        textInput("acss_arithmetic", "ACSS Arithmetic Score"),
-        textInput("percentile_arithmetic", "Percentile Arithmetic Score"),
-        textInput("raw_symbol_s", "Raw Symbol S Score"),
-        textInput("acss_symbol_s", "ACSS Symbol S Score"),
-        textInput("percentile_symbol_s", "Percentile Symbol S Score"),
-        textInput("raw_coding", "Raw Coding Score"),
-        textInput("acss_coding", "ACSS Coding Score"),
-        textInput("percentile_coding", "Percentile Coding Score"),
-        textInput("raw_wais_vcl", "Raw WAIS-IV VCL"),
-        textInput("standard_wais_vcl", "Standard WAIS-IV VCL"),
-        textInput("percentile_wais_vcl", "Percentile WAIS-IV VCL"),
-        textInput("raw_wais_pri", "Raw WAIS-IV PRI"),
-        textInput("standard_wais_pri", "Standard WAIS-IV PRI"),
-        textInput("percentile_wais_pri", "Percentile WAIS-IV PRI"),
-        textInput("raw_wais_gai", "Raw WAIS-IV GAI"),
-        textInput("standard_wais_gai", "Standard WAIS-IV GAI"),
-        textInput("percentile_wais_gai", "Percentile WAIS-IV GAI"),
-        textInput("raw_wais_wmi", "Raw WAIS-IV WMI"),
-        textInput("standard_wais_wmi", "Standard WAIS-IV WMI"),
-        textInput("percentile_wais_wmi", "Percentile WAIS-IV WMI"),
-        textInput("raw_wais_psi", "Raw WAIS-IV PSI"),
-        textInput("standard_wais_psi", "Standard WAIS-IV PSI"),
-        textInput("percentile_wais_psi", "Percentile WAIS-IV PSI"),
-        textInput("raw_wais_fsiq", "Raw WAIS-IV FSIQ"),
-        textInput("standard_wais_fsiq", "Standard WAIS-IV FSIQ"),
-        textInput("percentile_fsiq", "Percentile WAIS-IV FSIQ"),
-        textInput("raw_wais_ds", "Raw WAIS-IV DS"),
-        textInput("acss_wais_ds", "Standard WAIS-IV DS"),
-        textInput("percentile_wais_ds", "Percentile WAIS-IV DS"),
-        textInput("raw_ds_fwd", "Raw DS Fwd"),
-        textInput("acss_ds_fwd", "Standard DS Fwd"),
-        textInput("percentile_ds_fwd", "Percentile DS Fwd"),
-        textInput("raw_ds_bwd", "Raw DS Bwd"),
-        textInput("acss_ds_bwd", "Standard DS Bwd"),
-        textInput("percentile_ds_bwd", "Percentile DS Bwd"),
-        textInput("raw_ds_seq", "Raw DS Seq"),
-        textInput("acss_ds_seq", "Standard DS Seq"),
-        textInput("percentile_ds_seq", "Percentile DS Seq"),
-        textInput("longest_fwd", "Longest Fwd"),
-        textInput("longest_bwd", "Longest Bwd"),
-        textInput("longest_seq", "Longest Seq"),
-        textInput("t_cpt3_d", "t-score Conner's CPT-3 d"),
-        textInput("rating_cpt3_d", "Rating (e.g., Average, Low, etc.) Conners CPT-3 d"),
-        textInput("t_cpt3_omissions", "t-score Conners CPT-3 Omissions"),
-        textInput("rating_cpt3_omissions", "Rating (e.g., Average) Conners CPT-3 Omissions"),
-        textInput("t_cpt3_commissions", "t-score Conners CPT-3 Commissions"),
-        textInput("rating_cpt3_commissions", "Rating (e.g., Average) Conners CPT-3 Commissions"),
-        textInput("t_cpt3_perseverations", "t-score Conners CPT-3 Perseverations"),
-        textInput("rating_cpt3_perseverations", "Rating (e.g., Average) Conners CPT-3 Perseverations"),
-        textInput("raw_wais_ss", "Raw WAIS-IV SS"),
-        textInput("acss_wais_ss", "Standard WAIS-IV SS"),
-        textInput("percentile_wais_ss", "Percentile WAIS-IV SS"),
-        textInput("raw_wais_co", "Raw WAIS-IV CO"),
-        textInput("acss_wais_co", "Standard WAIS-IV CO"),
-        textInput("percentile_wais_co", "Percentile WAIS-IV CO"),
-        textInput("raw_stroop_word", "Raw Stroop (Word)"),
-        textInput("t_stroop_word", "t-score Stroop (Word)"),
-        textInput("percentile_stroop_word", "Percentile Stroop (Word)"),
-        textInput("error_stroop_word", "Error Stroop (Word)"),
-        textInput("raw_stroop_color", "Raw Stroop (Color)"),
-        textInput("t_stroop_color", "t-score Stroop (Color)"),
-        textInput("percentile_stroop_color", "Percentile Stroop (Color)"),
-        textInput("error_stroop_color", "Error Stroop (Color)"),
-        textInput("raw_trails_a", "Raw Trails A"),
-        textInput("z_trails_a", "z-score Trails A"),
-        textInput("percentile_trails_a", "Percentile Trails A"),
-        textInput("error_trails_a", "Error Trails A"),
-        textInput("raw_hrt", "Raw HRT"),
-        textInput("t_hrt", "t-score HRT"),
-        selectInput("rating_hrt", "Rating HRT", choices = c("Atypically Low", "Low", "Average", "Fast", "Atypically Fast")),
-        textInput("raw_hrt_sd", "Raw HRT SD"),
-        textInput("t_hrt_sd", "t-score HRT SD"),
-        selectInput("rating_hrt_sd", "Rating HRT SD", choices = c("Atypically Low", "Low", "Average", "Fast", "Atypically Fast")),
-        textInput("raw_variability", "Raw Variability"),
-        textInput("t_variability", "t-score Variability"),
-        selectInput("rating_variability", "Rating Variability", choices = c("Atypically Low", "Low", "Average", "Fast", "Atypically Fast")),
-        textInput("raw_hrt_block_change", "Raw HRT Block Change"),
-        textInput("t_hrt_block_change", "t-score HRT Block Change"),
-        selectInput("rating_hrt_block_change", "Rating HRT Block Change", c("Atypically Low", "Low", "Average", "Fast", "Atypically Fast")),
-        textInput("raw_hrt_isi_change", "Raw HRT ISI Change"),
-        textInput("t_hrt_isi_change", "t-score HRT ISI Change"),
-        selectInput("rating_hrt_isi_change", "Rating HRT ISI Change", c("Atypically Low", "Low", "Average", "Fast", "Atypically Fast")),
-        textInput("raw_wcst_categ", "Raw WCST-64 Categories"),
-        textInput("percentile_wcst_categ", "Percentile WCST-64 Categories"),
-        textInput("raw_wcst_p_errors", "Raw WCST P Errors"),
-        textInput("percentile_wcst_p_errors", "Percentile WCST P Errors"),
-        textInput("raw_wcst_clr", "Raw WCST CLR"),
-        textInput("percentile_wcst_clr", "Percentile WCST CLR"),
-        textInput("raw_wcst_fms", "Raw WCST FMS"),
-        textInput("percentile_wcst_fms", "Percentile WCST FMS"),
-        textInput("raw_wais_si", "Raw WAIS-IV SI"),
-        textInput("acss_wais_si", "Standard WAIS-IV SI"),
-        textInput("percentile_wais_si", "Percentile WAIS-IV SI"),
-        textInput("raw_wais_mr", "Raw WAIS-IV MR"),
-        textInput("acss_wais_mr", "Standard WAIS-IV MR"),
-        textInput("percentile_wais_mr", "Percentile WAIS-IV MR"),
-        textInput("raw_trails_b", "Raw Trails B"),
-        textInput("z_trails_b", "z-score Trails B"),
-        textInput("percentile_trails_b", "Percentile Trails B"),
-        textInput("raw_stroop_cw", "Raw Stroop (CW)"),
-        textInput("t_stroop_cw", "t-score Stroop (CW)"),
-        textInput("percentile_stroop_cw", "Percentile Stroop (CW)"),
-        textInput("raw_fas", "Raw FAS"),
-        textInput("z_fas", "z-score FAS"),
-        textInput("percentile_fas", "Percentile FAS"),
-        textInput("raw_fas_lang", "Raw FAS Lang"),
-        textInput("z_fas_lang", "z-score FAS Lang"),
-        textInput("percentile_fas_lang", "Percentile FAS Lang"),
-        textInput("raw_animals", "Raw Animals"),
-        textInput("z_animals", "z-score Animals"),
-        textInput("percentile_animals", "Percentile Animals"),
-        textInput("raw_wais_vc", "Raw WAIS-IV VC"),
-        textInput("z_wais_vc", "z-score WAIS-IV VC"),
-        textInput("percentile_wais_vc", "Percentile WAIS-IV VC"),
-        textInput("raw_wais_bd", "Raw WAIS-IV BD"),
-        textInput("acss_wais_bd", "Standard WAIS-IV BD"),
-        textInput("percentile_wais_bd", "Percentile WAIS-IV BD"),
-        textInput("raw_wais_vp", "Raw WAIS-IV VP"),
-        textInput("acss_wais_vp", "Standard WAIS-IV VP"),
-        textInput("percentile_wais_vp", "Percentile WAIS-IV VP"),
-        textInput("raw_rcft_copy", "Raw RCFT Copy"),
-        textInput("acss_rcft_copy", "Standard RCFT Copy"),
-        textInput("percentile_rcft_copy", "Percentile RCFT Copy"),
-        textInput("raw_cvlt_3", "Raw CVLT-3"),
-        textInput("acss_cvlt_3", "Standard CVLT-3"),
-        textInput("percentile_cvlt_3", "Percentile CVLT-3"),
-        textInput("raw_trials", "Raw Trials 1-5"),
-        textInput("t_trials", "t-score Trials 1-5"),
-        textInput("percentile_trials", "Percentile Trials 1-5"),
-        textInput("raw_list_b", "Raw List B"),
-        textInput("acss_list_b", "Standard List B"),
-        textInput("percentile_list_b", "Percentile List B"),
-        textInput("raw_sd_free", "Raw SD Free"),
-        textInput("acss_sd_free", "Standard SD Free"),
-        textInput("percentile_sd_free", "Percentile SD Free"),
-        textInput("raw_sd_cued", "Raw SD Cued"),
-        textInput("acss_sd_cued", "Standard SD Cued"),
-        textInput("percentile_sd_cued", "Percentile SD Cued"),
-        textInput("raw_ld_free", "Raw LD Free"),
-        textInput("acss_ld_free", "Standard LD Free"),
-        textInput("percentile_ld_free", "Percentile LD Free"),
-        textInput("raw_ld_cued", "Raw LD Cued"),
-        textInput("acss_ld_cued", "Standard LD Cued"),
-        textInput("percentile_ld_cued", "Percentile LD Cued"),
-        textInput("raw_repetitions", "Raw Repetitions"),
-        textInput("acss_repetitions", "Standard Repetitions"),
-        textInput("percentile_repetitions", "Percentile Repetitions"),
-        textInput("raw_intrusions", "Raw Intrusions"),
-        textInput("acss_intrusions", "Standard Intrusions"),
-        textInput("percentile_intrusions", "Percentile Intrusions"),
-        textInput("raw_recog_hits", "Raw Recog Hits"),
-        textInput("acss_recog_hits", "Standard Recog Hits"),
-        textInput("percentile_recog_hits", "Percentile Recog Hits"),
-        textInput("raw_false_positives", "Raw False Positives"),
-        textInput("acss_false_positives", "Standard False Positives"),
-        textInput("percentile_false_positives", "Percentile False Positives"),
-        textInput("raw_ld_recog_accuracy", "Raw LD Recog Accuracy"),
-        textInput("acss_ld_recog_accuracy", "Standard LD Recog Accuracy"),
-        textInput("percentile_ld_recog_accuracy", "Percentile LD Recog Accuracy"),
-        textInput("raw_wms_iv", "Raw WMS-IV"),
-        textInput("acss_wms_iv", "Standard WMS-IV"),
-        textInput("percentile_wms_iv", "Percentile WMS-IV"),
-        textInput("raw_lm_i", "Raw LM I"),
-        textInput("acss_lm_i", "Standard LM I"),
-        textInput("percentile_lm_i", "Percentile LM I"),
-        textInput("raw_lm_ii", "Raw LM II"),
-        textInput("acss_lm_ii", "Standard LM II"),
-        textInput("percentile_lm_ii", "Percentile LM II"),
-        textInput("raw_recognition", "Raw Recognition"),
-        textInput("acss_recognition", "Standard Recognition"),
-        textInput("percentile_recognition", "Percentile Recognition"),
-        textInput("raw_rcft_3", "Raw RCFT 3\" Delay"),
-        textInput("t_rcft_3", "t-score RCFT 3\" Delay"),
-        textInput("percentile_rcft_3", "Percentile RCFT 3\" Delay"),
-        textInput("raw_rcft_30", "Raw RCFT 30\" Delay"),
-        textInput("t_rcft_30", "t-score RCFT 30\" Delay"),
-        textInput("percentile_rcft_30", "Percentile RCFT 30\" Delay"),
-        textInput("raw_rcft_total_recog", "Raw RCFT Total Recog"),
-        textInput("t_rcft_total_recog", "t-score RCFT Total Recog"),
-        textInput("percentile_rcft_total_recog", "Percentile RCFT Total Recog"),
-        textInput("score_bdi_ii", "BDI-II Patient Score"),
-        textInput("score_bai", "BAI Patient Score"),
-        textInput("t_inattention", "t-score Inattention/Memory Problems"),
-        textInput("t_hyperactivity", "t-score Hyperactivity/Restlessness"),
-        textInput("t_impulsivity", "t-score Impulsivity/Emotional Lability"),
-        textInput("t_self_concept", "t-score Problems with Self-Concept"),
-        textInput("t_dsm_inattentive", "t-score DSM-IV Inattentive Symptoms"),
-        textInput("t_dsm_hyperactive", "t-score DSM-IV Hyperactive-Impulsive Symptoms"),
-        textInput("t_dsm_adhd_total", "t-score DSM-IV ADHD Symptoms Total"),
-        textInput("t_adhd_index", "t-score ADHD Index"),
-        selectInput("level_depression", "Level of Depression Severity", choices = c("minimal", "mild", "moderate", "severe")),
-        selectInput("level_anxiety", "Level of Anxiety Severity", choices = c("minimal", "mild", "moderate", "severe")),
-
-        textAreaInput("beginning_symptoms", "Patient's beginning of the symptoms", height = "200px"),
-        textAreaInput("hs_college_symptoms", "Patient's symptoms during high school and college", height = "200px"),
-        textAreaInput("occupational_symptoms", "Patient's symptoms during occupation", height = "200px"),
-        textAreaInput("current_mood", "Patient's current mood", height = "200px"),
-        textAreaInput("current_sleep", "Patient's current sleep patterns", height = "200px"),
-        textAreaInput("motor_sensory_functioning", "Patient's motor and sensorying functioning", height = "200px"),
-        textAreaInput("current_functioning", "Patient's current functioning (Starts Current Functioning:)", height = "200px"),
-        textAreaInput("medical_history", "Patient's medical history (Starts Medical History:)", height = "200px"),
-        textAreaInput("family_history", "Patient's family history of symptoms", height = "200px"),
-        textAreaInput("psychiatric_history", "Patient's psychiatric history (Starts Psychiatric History and Substance Use)", height = "200px"),
-        textAreaInput("substance_use_history", "Patient's substance use history.", height = "200px"),
-        textAreaInput("developmental_ed_social_occupation", "Patient's developmental, educational, social, and occupational history (Starts Developmental, Educational, Social, and Occupational History)", height = "200px"),
-        textAreaInput("behavioral_observations", "Patient's behavioral observations", height = "200px"),
-        checkboxGroupInput("administered_tests", "What tests were Administered (Check All)", choices = tests$Test),
-        textAreaInput("intellectual_functioning_results", "Intellectual Functioning Results", height = "200px"),
-        textAreaInput("attention_concentration_results", "Attention/Concentration Results", height = "200px"),
-        textAreaInput("processing_speed_results", "Processing Speed Results", height = "200px"),
-        textAreaInput("executive_function_results", "Executive Functioning Results", height = "200px"),
-        textAreaInput("language_skill_results", "Language Skills Results", height = "200px"),
-        textAreaInput("visual_spatial_results", "Visual-Spatial Results", height = "200px"),
-        textAreaInput("memory_results", "Memory Results", height = "200px"),
-        textAreaInput("mood_personality_results", "Mood/Personality Results", height = "200px"),
-        textAreaInput("summary_impressions", "Summary & Impressions", height = "200px"),
-        selectInput("academic_accommodations", "The patient need academic accommodations.", choices = c(TRUE, FALSE)),
-  
-        # selectInput("report_type", "Word doc = .docx; pdf = .pdf; web page = .html", choices = c(".docx", ".pdf", ".html")),
-        downloadButton("report", "Generate report"),
+        selectInput("test_select", "Select the assessment you want calculated (Subtests can be chosen after).", choices = tests$Test),
+        selectInput("subtests", "Would you like to calculate all of the subtests for the chosen assessment?", selected = "No", choices = c("No", "Yes")),
+        numericInput("population_size", "Population size (do not feel inclined to change):", value = 10000, min = 10, max = 100000),
+        numericInput("patient_score", "Input the patient's raw score:", value = NULL, min = 0, max = 1000),
+        numericInput("patient_score2", "Include the patient's raw score (if this is a second testing):", value = NULL, min = 0, max = 1000),
+        selectInput("custom_population", "Include your own normative average and standard deviation?", selected = "No", choices = c("No", "Yes")),
+        numericInput("custom_pop_avg", "Normative average (if applicable):", value = NULL, min = 0, max = 1000),
+        numericInput("custom_pop_sd", "Variation around the normative average (if applicable):", value = NULL, min = 0, max = 1000),
+        selectInput("higher_better", "A higher score indicates better performance.", selected = "Yes", choices = c("No", "Yes")),
+        actionButton("submit_score", "Submit"),
+        downloadButton("download_report", "Generate report"),
         width = 4
-    ),
-    mainPanel(
-        tabPanel("test_names", DT::dataTableOutput("table1")),
-        tabPanel("test_subtests", DT::dataTableOutput("table2"))
-      )
-      )
-    ),
-  server = function(input, output) {
+      ),
 
-    output$table1 <- DT::renderDataTable(
-      tests |>
-        dplyr::select(Test:Abbreviation) |>
-        DT::datatable(selection = 'single', options=list(scrollX=TRUE))
-        )
-
-    output$table2 <- DT::renderDataTable(
-      tests |>
-        dplyr::select(-Abbreviation) |>
-        DT::datatable(selection = 'single', options=list(scrollX=TRUE))
-        )
-
-    output$report <- downloadHandler(
-      # For PDF output, change this to "report.pdf"
-      filename = "report.docx",
-      content = function(file) {
-        # Set up parameters to pass to Rmd document
-       params <- list(
-        patient_name = input$patient_name,
-        dob = input$dob,
-        city = input$city,
-        state = input$state,
-        interview_date = input$interview_date,
-        testing_date = input$testing_date,
-        examiner = input$examiner,
-        examiner_title = input$examiner_title,
-        examiner_license = input$examiner_license,
-        examiner2_tf = input$examiner2_tf,
-        examiner2 = input$examiner2,
-        examiner2_title = input$examiner2_title,
-        examiner2_license = input$examiner2_license,
-        examiner3_tf = input$examiner3_tf,
-        examiner3 = input$examiner3,
-        examiner3_title = input$examiner3_title,
-        examiner3_license = input$examiner3_license,
-        mr_ms = input$mr_ms,
-        male_female = input$male_female,
-        his_her_their = input$his_her_their,
-        he_she_they = input$he_she_they,
-        patient_age = input$patient_age,
-        handed = input$handed,
-        marital_status = input$marital_status,
-        race_ethnicity = input$race_ethnicity,
-        bilingual = input$bilingual,
-        years_of_ed = input$years_of_ed,
-        referred = input$referred,
-        referring_dr = input$referring_dr,
-        past_diagnosis_tf = input$past_diagnosis_tf,
-        past_diagnosis = input$past_diagnosis,
-        past_dr_diagnosing = input$past_dr_diagnosing,
-        age_of_diagnosis = input$age_of_diagnosis,
-        time_of_symptom_concern = input$time_of_symptom_concern,
-        major_medical_issues = input$major_medical_issues,
-        diagnosis_symptoms = input$diagnosis_symptoms,
-        current_medications = input$current_medications,
-        past_medications = input$past_medications,
-        raw_topf = input$raw_topf,
-        standard_topf = input$standard_topf,
-        percentile_topf = input$percentile_topf,
-        score_cvlt_ii_fc = input$score_cvlt_ii_fc,
-        total_cvlt_ii_fc = input$total_cvlt_ii_fc,
-        score_rds = input$score_rds,
-        tomm_trial_1 = input$tomm_trial_1,
-        tomm_trial_2 = input$tomm_trial_2,
-        raw_similarities = input$raw_similarities,
-        acss_similarities = input$acss_similarities,
-        percentile_similarities = input$percentile_similarities,
-        raw_information = input$raw_information,
-        acss_information = input$acss_information,
-        percentile_information = input$percentile_information,
-        raw_vocab = input$raw_vocab,
-        acss_vocab = input$acss_vocab,
-        percentile_vocab = input$percentile_vocab,
-        raw_block_design = input$raw_block_design,
-        acss_block_design = input$acss_block_design,
-        percentile_block_design = input$percentile_block_design,
-        raw_matrix_reason = input$raw_matrix_reason,
-        acss_matrix_reason = input$acss_matrix_reason,
-        percentile_matrix_reason = input$percentile_matrix_reason,
-        raw_visual_puzzle = input$raw_visual_puzzle,
-        acss_visual_puzzle = input$acss_visual_puzzle,
-        percentile_visual_puzzle = input$percentile_visual_puzzle,
-        raw_digit_span = input$raw_digit_span,
-        acss_digit_span = input$acss_digit_span,
-        percentile_digit_span = input$percentile_digit_span,
-        raw_arithmetic = input$raw_arithmetic,
-        acss_arithmetic = input$acss_arithmetic,
-        percentile_arithmetic = input$percentile_arithmetic,
-        raw_symbol_s = input$raw_symbol_s,
-        acss_symbol_s = input$acss_symbol_s,
-        percentile_symbol_s = input$percentile_symbol_s,
-        raw_coding = input$raw_coding,
-        acss_coding = input$acss_coding,
-        percentile_coding = input$percentile_coding,
-        raw_wais_vcl = input$raw_wais_vcl,
-        standard_wais_vcl = input$standard_wais_vcl,
-        percentile_wais_vcl = input$percentile_wais_vcl,
-        raw_wais_pri = input$raw_wais_pri,
-        standard_wais_pri = input$standard_wais_pri,
-        percentile_wais_pri = input$percentile_wais_pri,
-        raw_wais_gai = input$raw_wais_gai,
-        standard_wais_gai = input$standard_wais_gai,
-        percentile_wais_gai = input$percentile_wais_gai,
-        raw_wais_wmi = input$raw_wais_wmi,
-        standard_wais_wmi = input$standard_wais_wmi,
-        percentile_wais_wmi = input$percentile_wais_wmi,
-        raw_wais_psi = input$raw_wais_psi,
-        standard_wais_psi = input$standard_wais_psi,
-        percentile_wais_psi = input$percentile_wais_psi,
-        raw_wais_fsiq = input$raw_wais_fsiq,
-        standard_wais_fsiq = input$standard_wais_fsiq,
-        percentile_fsiq = input$percentile_fsiq,
-        raw_wais_ds = input$raw_wais_ds,
-        acss_wais_ds = input$acss_wais_ds,
-        percentile_wais_ds = input$percentile_wais_ds,
-        raw_ds_fwd = input$raw_ds_fwd,
-        acss_ds_fwd = input$acss_ds_fwd,
-        percentile_ds_fwd = input$percentile_ds_fwd,
-        raw_ds_bwd = input$raw_ds_bwd,
-        acss_ds_bwd = input$acss_ds_bwd,
-        percentile_ds_bwd = input$percentile_ds_bwd,
-        raw_ds_seq = input$raw_ds_seq,
-        acss_ds_seq = input$acss_ds_seq,
-        percentile_ds_seq = input$percentile_ds_seq,
-        longest_fwd = input$longest_fwd,
-        longest_bwd = input$longest_bwd,
-        longest_seq = input$longest_seq,
-        t_cpt3_d = input$t_cpt3_d,
-        rating_cpt3_d = input$rating_cpt3_d,
-        t_cpt3_omissions = input$t_cpt3_omissions,
-        rating_cpt3_omissions = input$rating_cpt3_omissions,
-        t_cpt3_commissions = input$t_cpt3_commissions,
-        rating_cpt3_commissions = input$rating_cpt3_commissions,
-        t_cpt3_perseverations = input$t_cpt3_perseverations,
-        rating_cpt3_perseverations = input$rating_cpt3_perseverations,
-        raw_wais_ss = input$raw_wais_ss,
-        acss_wais_ss = input$acss_wais_ss,
-        percentile_wais_ss = input$percentile_wais_ss,
-        raw_wais_co = input$raw_wais_co,
-        acss_wais_co = input$acss_wais_co,
-        percentile_wais_co = input$percentile_wais_co,
-        raw_stroop_word = input$raw_stroop_word,
-        t_stroop_word = input$t_stroop_word,
-        percentile_stroop_word = input$percentile_stroop_word,
-        error_stroop_word = input$error_stroop_word,
-        raw_stroop_color = input$raw_stroop_color,
-        t_stroop_color = input$t_stroop_color,
-        percentile_stroop_color = input$percentile_stroop_color,
-        error_stroop_color = input$error_stroop_color,
-        raw_trails_a = input$raw_trails_a,
-        z_trails_a = input$z_trails_a,
-        percentile_trails_a = input$percentile_trails_a,
-        error_trails_a = input$error_trails_a,
-        raw_hrt = input$raw_hrt,
-        t_hrt = input$t_hrt,
-        rating_hrt = input$rating_hrt,
-        raw_hrt_sd = input$raw_hrt_sd,
-        t_hrt_sd = input$t_hrt_sd,
-        rating_hrt_sd = input$rating_hrt_sd,
-        raw_variability = input$raw_variability,
-        t_variability = input$t_variability,
-        rating_variability = input$rating_variability,
-        raw_hrt_block_change = input$raw_hrt_block_change,
-        t_hrt_block_change = input$t_hrt_block_change,
-        rating_hrt_block_change = input$rating_hrt_block_change,
-        raw_hrt_isi_change = input$raw_hrt_isi_change,
-        t_hrt_isi_change = input$t_hrt_isi_change,
-        rating_hrt_isi_change = input$rating_hrt_isi_change,
-        raw_wcst_categ = input$raw_wcst_categ,
-        percentile_wcst_categ = input$percentile_wcst_categ,
-        raw_wcst_p_errors = input$raw_wcst_p_errors,
-        percentile_wcst_p_errors = input$percentile_wcst_p_errors,
-        raw_wcst_clr = input$raw_wcst_clr,
-        percentile_wcst_clr = input$percentile_wcst_clr,
-        raw_wcst_fms = input$raw_wcst_fms,
-        percentile_wcst_fms = input$percentile_wcst_fms,
-        raw_wais_si = input$raw_wais_si,
-        acss_wais_si = input$acss_wais_si,
-        percentile_wais_si = input$percentile_wais_si,
-        raw_wais_mr = input$raw_wais_mr,
-        acss_wais_mr = input$acss_wais_mr,
-        percentile_wais_mr = input$percentile_wais_mr,
-        raw_trails_b = input$raw_trails_b,
-        z_trails_b = input$z_trails_b,
-        percentile_trails_b = input$percentile_trails_b,
-        raw_stroop_cw = input$raw_stroop_cw,
-        t_stroop_cw = input$t_stroop_cw,
-        percentile_stroop_cw = input$percentile_stroop_cw,
-        raw_fas = input$raw_fas,
-        z_fas = input$z_fas,
-        percentile_fas = input$percentile_fas,
-        raw_fas_lang = input$raw_fas_lang,
-        z_fas_lang = input$z_fas_lang,
-        percentile_fas_lang = input$percentile_fas_lang,
-        raw_animals = input$raw_animals,
-        z_animals = input$z_animals,
-        percentile_animals = input$percentile_animals,
-        raw_wais_vc = input$raw_wais_vc,
-        z_wais_vc = input$z_wais_vc,
-        percentile_wais_vc = input$percentile_wais_vc,
-        raw_wais_bd = input$raw_wais_bd,
-        acss_wais_bd = input$acss_wais_bd,
-        percentile_wais_bd = input$percentile_wais_bd,
-        raw_wais_vp = input$raw_wais_vp,
-        acss_wais_vp = input$acss_wais_vp,
-        percentile_wais_vp = input$percentile_wais_vp,
-        raw_rcft_copy = input$raw_rcft_copy,
-        acss_rcft_copy = input$acss_rcft_copy,
-        percentile_rcft_copy = input$percentile_rcft_copy,
-        raw_cvlt_3 = input$raw_cvlt_3,
-        acss_cvlt_3 = input$acss_cvlt_3,
-        percentile_cvlt_3 = input$percentile_cvlt_3,
-        raw_trials = input$raw_trials,
-        t_trials = input$t_trials,
-        percentile_trials = input$percentile_trials,
-        raw_list_b = input$raw_list_b,
-        acss_list_b = input$acss_list_b,
-        percentile_list_b = input$percentile_list_b,
-        raw_sd_free = input$raw_sd_free,
-        acss_sd_free = input$acss_sd_free,
-        percentile_sd_free = input$percentile_sd_free,
-        raw_sd_cued = input$raw_sd_cued,
-        acss_sd_cued = input$acss_sd_cued,
-        percentile_sd_cued = input$percentile_sd_cued,
-        raw_ld_free = input$raw_ld_free,
-        acss_ld_free = input$acss_ld_free,
-        percentile_ld_free = input$percentile_ld_free,
-        raw_ld_cued = input$raw_ld_cued,
-        acss_ld_cued = input$acss_ld_cued,
-        percentile_ld_cued = input$percentile_ld_cued,
-        raw_repetitions = input$raw_repetitions,
-        acss_repetitions = input$acss_repetitions,
-        percentile_repetitions = input$percentile_repetitions,
-        raw_intrusions = input$raw_intrusions,
-        acss_intrusions = input$acss_intrusions,
-        percentile_intrusions = input$percentile_intrusions,
-        raw_recog_hits = input$raw_recog_hits,
-        acss_recog_hits = input$acss_recog_hits,
-        percentile_recog_hits = input$percentile_recog_hits,
-        raw_false_positives = input$raw_false_positives,
-        acss_false_positives = input$acss_false_positives,
-        percentile_false_positives = input$percentile_false_positives,
-        raw_ld_recog_accuracy = input$raw_ld_recog_accuracy,
-        acss_ld_recog_accuracy = input$acss_ld_recog_accuracy,
-        percentile_ld_recog_accuracy = input$percentile_ld_recog_accuracy,
-        raw_wms_iv = input$raw_wms_iv,
-        acss_wms_iv = input$acss_wms_iv,
-        percentile_wms_iv = input$percentile_wms_iv,
-        raw_lm_i = input$raw_lm_i,
-        acss_lm_i = input$acss_lm_i,
-        percentile_lm_i = input$percentile_lm_i,
-        raw_lm_ii = input$raw_lm_ii,
-        acss_lm_ii = input$acss_lm_ii,
-        percentile_lm_ii = input$percentile_lm_ii,
-        raw_recognition = input$raw_recognition,
-        acss_recognition = input$acss_recognition,
-        percentile_recognition = input$percentile_recognition,
-        raw_rcft_3 = input$raw_rcft_3,
-        t_rcft_3 = input$t_rcft_3,
-        percentile_rcft_3 = input$percentile_rcft_3,
-        raw_rcft_30 = input$raw_rcft_30,
-        t_rcft_30 = input$t_rcft_30,
-        percentile_rcft_30 = input$percentile_rcft_30,
-        raw_rcft_total_recog = input$raw_rcft_total_recog,
-        t_rcft_total_recog = input$t_rcft_total_recog,
-        percentile_rcft_total_recog = input$percentile_rcft_total_recog,
-        score_bdi_ii = input$score_bdi_ii,
-        score_bai = input$score_bai,
-        t_inattention = input$t_inattention,
-        t_hyperactivity = input$t_hyperactivity,
-        t_impulsivity = input$t_impulsivity,
-        t_self_concept = input$t_self_concept,
-        t_dsm_inattentive = input$t_dsm_inattentive,
-        t_dsm_hyperactive = input$t_dsm_hyperactive,
-        t_dsm_adhd_total = input$t_dsm_adhd_total,
-        t_adhd_index = input$t_adhd_index,
-        level_depression = input$level_depression,
-        level_anxiety = input$level_anxiety,
-        beginning_symptoms = input$beginning_symptoms,
-        hs_college_symptoms = input$hs_college_symptoms,
-        occupational_symptoms = input$occupational_symptoms,
-        current_mood = input$current_mood,
-        current_sleep = input$current_sleep,
-        motor_sensory_functioning = input$motor_sensory_functioning,
-        current_functioning = input$current_functioning,
-        medical_history = input$medical_history,
-        family_history = input$family_history,
-        psychiatric_history = input$psychiatric_history,
-        substance_use_history = input$substance_use_history,
-        developmental_ed_social_occupation = input$developmental_ed_social_occupation,
-        behavioral_observations = input$behavioral_observations,
-        administered_tests = input$administered_tests,
-        intellectual_functioning_results = input$intellectual_functioning_results,
-        attention_concentration_results = input$attention_concentration_results,
-        processing_speed_results = input$processing_speed_results,
-        executive_function_results = input$executive_function_results,
-        language_skill_results = input$language_skill_results,
-        visual_spatial_results = input$visual_spatial_results,
-        memory_results = input$memory_results,
-        mood_personality_results = input$mood_personality_results,
-        summary_impressions = input$summary_impressions,
-        academic_accommodations = input$academic_accommodations
+     mainPanel(
+        tabsetPanel(
+          # Distribution-Based Approach
+          tabPanel("Distribution-Based Approach to Normative Scoring",
+                   DT::dataTableOutput("tests_table"),
+                   plotOutput("raw_plot"),
+                   DT::dataTableOutput("test_score_table"),
+                   plotOutput("z_plot")
+          ),
+          
+          # Regression-Based Approach
+          tabPanel("BETA: Regression-Based Approach to Normative Scoring"
+                   #DT::dataTableOutput("tests_table")
+                   # plotOutput("regression_plot"),
+                   # DT::dataTableOutput("regression_table")
           )
+        )
+      )
+    )
+  )
+),
 
-        out <- quarto::quarto_render(
-          "report.qmd",
-          execute_params = params
-    )
-    file.copy(out, file)
+server = function(input, output) {
+    
+    observeEvent(input$submit_score, {
+      output$tests_table <- DT::renderDataTable({
+        tests |> 
+          DT::datatable(selection = 'single', options = list(scrollX = TRUE))
+      })
+      
+      output$test_score_table <- DT::renderDataTable({
+      if (input$custom_population == "Yes") {
+        table_create(
+          full_test = input$test_select, 
+          population_avg = input$custom_pop_avg, 
+          population_variation = input$custom_pop_sd, 
+          individual_score1 = input$patient_score,
+          individual_score2 = input$patient_score2,
+          higher_better = input$higher_better
+        )
+      } else {
+        table_create(
+          full_test = input$test_select, 
+          population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
+          population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
+          individual_score = input$patient_score,
+          individual_score2 = input$patient_score2,
+          higher_better = input$higher_better
+        )
       }
-    )
+    })
+      
+      output$raw_plot <- renderPlot({
+        if (input$custom_population == "Yes") {
+          calculations(
+            population_size = input$population_size,
+            population_avg = input$custom_pop_avg,
+            population_variation = input$custom_pop_sd,
+            individual_score = input$patient_score,
+            higher_better = input$higher_better
+            )[[1]]
+        } else {
+          calculations(
+            population_size = input$population_size,
+            population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
+            population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
+            individual_score = input$patient_score,
+            higher_better = input$higher_better
+            )[[1]]
+        }
+      })
+      
+      output$z_plot <- renderPlot({
+        if (input$custom_population == "Yes") {
+          calculations(
+            population_size = input$population_size,
+            population_avg = input$custom_pop_avg,
+            population_variation = input$custom_pop_sd,
+            individual_score = input$patient_score,
+            higher_better = input$higher_better
+            )[[2]]
+        } else {
+          calculations(
+            population_size = input$population_size,
+            population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
+            population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
+            individual_score = input$patient_score,
+            higher_better = input$higher_better
+            )[[2]]
+        }
+      })
+
+      
+
+    })
   }
 )
