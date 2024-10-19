@@ -101,6 +101,7 @@ z_table <- z_scores |>
     area, 2
   )
 
+
 z_table <- z_table |> 
   dplyr::mutate(
     condition = dplyr::case_when(
@@ -136,7 +137,10 @@ z_table <- z_table |>
     )
   )
 
+
 ggplot2::theme_set(cowplot::theme_cowplot())
+
+
 
 tests <- tibble::tibble(
   Test = c(
@@ -376,7 +380,6 @@ table_create <- function(
         }
     return(df_table)
 }
-
 
 # shiny app below this
 library(shiny)
