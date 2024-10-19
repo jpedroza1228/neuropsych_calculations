@@ -101,7 +101,6 @@ z_table <- z_scores |>
     area, 2
   )
 
-
 z_table <- z_table |> 
   dplyr::mutate(
     condition = dplyr::case_when(
@@ -137,10 +136,7 @@ z_table <- z_table |>
     )
   )
 
-
 ggplot2::theme_set(cowplot::theme_cowplot())
-
-
 
 tests <- tibble::tibble(
   Test = c(
@@ -324,10 +320,11 @@ table_create <- function(
   population_avg,
   population_variation,
   individual_score1,
-  #individual_score2,
+  individual_score2,
   higher_better
   ){
     if(higher_better == "Yes"){
+      if(is.null(individual_score2)){
         z1 <- (individual_score1 - population_avg)/population_variation
         z1 <- round(z1, 2)
 
@@ -352,7 +349,43 @@ table_create <- function(
             )
           )
       }
+      else{
+        z1 <- (individual_score1 - population_avg)/population_variation
+        z1 <- round(z1, 2)
+
+        z2 <- (individual_score2 - population_avg)/population_variation
+        z2 <- round(z2, 2)
+
+        #out1 <- z_table |> dplyr::filter(z_value == z1)
+        out2 <- z_table |> dplyr::filter(z_value == z2)
+
+        df_table <- 
+          tibble::tibble(
+            Scale = dplyr::filter(tests, Test == full_test) |> dplyr::pull(Test),
+            `Individual Raw Score - Time 1` = individual_score1,
+            `Individual Raw Score - Time 2` = individual_score2
+          ) |> 
+          dplyr::filter(Scale == full_test) |>
+          dplyr::mutate(
+            Difference = `Individual Raw Score - Time 2` - `Individual Raw Score - Time 1`,
+            `Percentile Rank` = out2$percentile[1],
+            `AACN Classification` = dplyr::case_when(
+              out2$percentile[1] >= 98 ~ "Exceptionally High Score",
+              out2$percentile[1] < 98 & out2$percentile[1] >= 91 ~ "Above Average Score",
+              out2$percentile[1] < 91 & out2$percentile[1] >= 75 ~ "High Average Score",
+              out2$percentile[1] < 75 & out2$percentile[1] >= 25 ~ "Average Score",
+              out2$percentile[1] < 25 & out2$percentile[1] >= 9 ~ "Low Average Score",
+              out2$percentile[1] < 9 & out2$percentile[1] >= 2 ~ "Below Average Score",
+              out2$percentile[1] < 2 ~ "Exceptionally Low Score"
+            )
+          ) |>
+          dplyr::relocate(
+            Difference, .after = `Individual Raw Score - Time 2`
+          )
+      }
+    }
     else{
+     if(is.null(individual_score2)){
         z1 <- (individual_score1 - population_avg)/population_variation
         z1 <- round(z1, 2)
         z1 <- 1 - z1
@@ -377,197 +410,44 @@ table_create <- function(
               out1$percentile[1] < 2 ~ "Exceptionally Low Score"
             )
           )
-        }
+      }
+        else{
+        z1 <- (individual_score1 - population_avg)/population_variation
+        z1 <- round(z1, 2)
+        z1 <- 1 - z1
+  
+        z2 <- (individual_score2 - population_avg)/population_variation
+        z2 <- round(z2, 2)
+        z2 <- 1 - z2
+  
+        #out1 <- z_table |> dplyr::filter(z_value == z1)
+        out2 <- z_table |> dplyr::filter(z_value == z2)
+  
+        df_table <- 
+          tibble::tibble(
+            Scale = dplyr::filter(tests, Test == full_test) |> dplyr::pull(Test),
+            `Individual Raw Score - Time 1` = individual_score1,
+            `Individual Raw Score - Time 2` = individual_score2
+          ) |> 
+          dplyr::filter(Scale == full_test) |>
+          dplyr::mutate(
+            Difference = `Individual Raw Score - Time 2` - `Individual Raw Score - Time 1`,
+            `Percentile Rank` = out2$percentile[1],
+            `AACN Classification` = dplyr::case_when(
+              out2$percentile[1] >= 98 ~ "Exceptionally High Score",
+              out2$percentile[1] < 98 & out2$percentile[1] >= 91 ~ "Above Average Score",
+              out2$percentile[1] < 91 & out2$percentile[1] >= 75 ~ "High Average Score",
+              out2$percentile[1] < 75 & out2$percentile[1] >= 25 ~ "Average Score",
+              out2$percentile[1] < 25 & out2$percentile[1] >= 9 ~ "Low Average Score",
+              out2$percentile[1] < 9 & out2$percentile[1] >= 2 ~ "Below Average Score",
+              out2$percentile[1] < 2 ~ "Exceptionally Low Score"
+            )
+          ) |>
+          dplyr::relocate(
+            Difference, .after = `Individual Raw Score - Time 2`
+          )
+      }
+    }
+
     return(df_table)
 }
-
-# shiny app below this
-library(shiny)
-
-shinyApp(
-  ui = fluidPage(
-    theme = bslib::bs_theme(preset = "flatly"),
-    navbarPage(
-    "Neuropsychology Assessment Table & Plot Creator",
-
-    # Sidebar Layout
-    sidebarLayout(
-      sidebarPanel(
-        selectInput("test_select", "Select the assessment you want calculated (Subtests can be chosen after).", choices = tests$Test),
-        # selectInput("subtests", "Would you like to calculate all of the subtests for the chosen assessment?", selected = "No", choices = c("No", "Yes")),
-        numericInput("population_size", "Population size (do not feel inclined to change):", value = 5000, min = 10, max = 100000),
-        numericInput("patient_score", "Input the patient's raw score:", value = NULL, min = 0, max = 1000),
-        # numericInput("patient_score2", "Include the patient's raw score (if this is a second testing):", value = NULL, min = 0, max = 1000),
-        selectInput("custom_population", "Include your own normative average and standard deviation?", selected = "No", choices = c("No", "Yes")),
-        numericInput("custom_pop_avg", "Normative average (if applicable):", value = NULL, min = 0, max = 1000),
-        numericInput("custom_pop_sd", "Variation around the normative average (if applicable):", value = NULL, min = 0, max = 1000),
-        selectInput("higher_better", "A higher score indicates better performance.", selected = "Yes", choices = c("No", "Yes")),
-        actionButton("submit_score", "Submit"),
-        #downloadButton("download_report", "Generate report"),
-        width = 4
-      ),
-
-     mainPanel(
-        tabsetPanel(
-          # Distribution-Based Approach
-          tabPanel("Distribution-Based Approach to Normative Scoring",
-                   DT::dataTableOutput("tests_table"),
-                   plotOutput("raw_plot"),
-                   DT::dataTableOutput("test_score_table"),
-                   plotOutput("z_plot")
-          ),
-          
-          # Regression-Based Approach
-          tabPanel("BETA: Regression-Based Approach to Normative Scoring"
-                   #DT::dataTableOutput("tests_table")
-                   # plotOutput("regression_plot"),
-                   # DT::dataTableOutput("regression_table")
-          )
-        )
-      )
-    )
-  )
-),
-
-server = function(input, output) {
-    
-    observeEvent(input$submit_score, {
-      output$tests_table <- DT::renderDataTable({
-        tests |> 
-          DT::datatable(selection = 'single', options = list(scrollX = TRUE))
-      })
-      
-      output$test_score_table <- DT::renderDataTable({
-      # individual_score2_val <- ifelse(is.null(input$patient_score2) || input$patient_score2 == "", NULL, input$patient_score2)
-
-      if (input$custom_population == "Yes") {
-        table_create(
-          full_test = input$test_select, 
-          population_avg = input$custom_pop_avg, 
-          population_variation = input$custom_pop_sd, 
-          individual_score1 = input$patient_score,
-          # individual_score2 = input$patient_score2,
-          higher_better = input$higher_better
-        ) |>
-        DT::datatable(selection = 'single', options=list(scrollX=TRUE))
-      } else {
-        table_create(
-          full_test = input$test_select, 
-          population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
-          population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
-          individual_score = input$patient_score,
-          # individual_score2 = input$patient_score2,
-          higher_better = input$higher_better
-        ) |>
-        DT::datatable(selection = 'single', options=list(scrollX=TRUE))
-      }
-    })
-      
-      output$raw_plot <- renderPlot({
-        if (input$custom_population == "Yes") {
-          calculations(
-            population_size = input$population_size,
-            population_avg = input$custom_pop_avg,
-            population_variation = input$custom_pop_sd,
-            individual_score = input$patient_score,
-            higher_better = input$higher_better
-            )[[1]]
-        } else {
-          calculations(
-            population_size = input$population_size,
-            population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
-            population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
-            individual_score = input$patient_score,
-            higher_better = input$higher_better
-            )[[1]]
-        }
-      })
-      
-      output$z_plot <- renderPlot({
-        if (input$custom_population == "Yes") {
-          calculations(
-            population_size = input$population_size,
-            population_avg = input$custom_pop_avg,
-            population_variation = input$custom_pop_sd,
-            individual_score = input$patient_score,
-            higher_better = input$higher_better
-            )[[2]]
-        } else {
-          calculations(
-            population_size = input$population_size,
-            population_avg = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Average`),
-            population_variation = tests |> dplyr::filter(Test == input$test_select) |> dplyr::pull(`Normative Variation`),
-            individual_score = input$patient_score,
-            higher_better = input$higher_better
-            )[[2]]
-        }
-      })
-      
-      # output$download_report <- downloadHandler(
-      #   filename = function() {
-      #     paste("index", Sys.Date(), ".pdf", sep = "")
-      #     },
-      #   content = function(file) {
-      #     # Create a temporary directory to store the rendered file
-      #     tempDir <- tempdir()
-    # 
-      #     # Copy the .qmd file to the temporary directory
-      #     file.copy("index.qmd", file.path(tempDir, "index.qmd"), overwrite = TRUE)
-# 
-      #     params <- list(
-      #       test_select = input$test_select,
-      #       subtests = input$subtests,
-      #       population_size = input$population_size,
-      #       patient_score = input$patient_score,
-      #       patient_score2 = input$patient_score2,
-      #       custom_population = input$custom_population,
-      #       custom_pop_avg = input$custom_pop_avg,
-      #       custom_pop_sd = input$custom_pop_sd,
-      #       higher_better = input$higher_better
-      #       )
-    # 
-      #     # Render the Quarto document
-      #     quarto::quarto_render(
-      #       input = file.path(tempDir, "index.qmd"),
-      #       output_format = "pdf",
-      #       output_file = file,
-      #       execute_params = params,
-      #       quiet = FALSE
-      #     )
-      #   }
-      # )
-
-      # For PDF output, change this to "report.pdf"
-      #filename = "index.docx",
-        #content = function(file) {
-        # Copy the report file to a temporary directory before processing it, in
-        # case we don't have write permissions to the current working dir (which
-        # can happen when deployed).
-          #tempReport <- file.path(tempdir(), "index.qmd")
-          #file.copy("index.qmd", tempReport, overwrite = TRUE)
-
-
-        # Set up parameters to pass to Rmd document
-       # params <- 
-
-        # Knit the document, passing in the `params` list, and eval it in a
-        # child of the global environment (this isolates the code in the document
-        # from the code in this app).
-        #quarto::quarto_render(
-        #  "index.qmd",
-        #  execute_params = list(
-        #    input$test_select, 
-        #    input$subtests, 
-        #    input$population_size, 
-        #    input$patient_score, 
-        #    input$patient_score2, 
-        #    input$custom_population, 
-        #    input$custom_pop_avg, 
-        #    input$custom_pop_sd, 
-        #    input$higher_better
-        #  )
-        #)
-    }
-      )
-    }
-)
