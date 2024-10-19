@@ -1,0 +1,101 @@
+---
+format: docx
+params:
+  test_select: NA
+  subtests: NA
+  population_size: NA
+  patient_score: NA
+  patient_score2: NA
+  custom_population: NA
+  custom_pop_avg: NA
+  custom_pop_sd: NA
+  higher_better: NA
+
+---
+
+```{r param to r objects, include = FALSE}
+source(here::here("tests_and_norms.R"))
+
+test_select <- params$test_select
+subtests <- params$subtests
+population_size <- params$population_size
+patient_score <- params$patient_score
+patient_score2 <- params$patient_score2
+custom_population <- params$custom_population
+custom_pop_avg <- params$custom_pop_avg
+custom_pop_sd <- params$custom_pop_sd
+higher_better <- params$higher_better
+
+```
+
+```{r}
+tests |> DT::datatable(selection = 'single', options = list(scrollX = TRUE))
+```
+
+# Table with Raw Score, Percentile, & American Academy of Clinical NeuroPsychology (AACN) Ranking
+
+```{r}
+if (custom_population == "Yes") {
+        table_create(
+          full_test = test_select, 
+          population_avg = custom_pop_avg, 
+          population_variation = custom_pop_sd, 
+          individual_score1 = patient_score,
+          individual_score2 = patient_score2,
+          higher_better = higher_better
+        )
+      } else {
+        table_create(
+          full_test = test_select, 
+          population_avg = tests |> dplyr::filter(Test == test_select) |> dplyr::pull(`Normative Average`),
+          population_variation = tests |> dplyr::filter(Test == test_select) |> dplyr::pull(`Normative Variation`),
+          individual_score = patient_score,
+          individual_score2 = patient_score2,
+          higher_better = higher_better
+        )
+      }
+```
+
+# Raw Score Plot
+
+```{r}
+if (custom_population == "Yes") {
+          calculations(
+            population_size = population_size,
+            population_avg = custom_pop_avg,
+            population_variation = custom_pop_sd,
+            individual_score = patient_score,
+            higher_better = higher_better
+            )[[1]]
+        } else {
+          calculations(
+            population_size = population_size,
+            population_avg = tests |> dplyr::filter(Test == test_select) |> dplyr::pull(`Normative Average`),
+            population_variation = tests |> dplyr::filter(Test == test_select) |> dplyr::pull(`Normative Variation`),
+            individual_score = patient_score,
+            higher_better = higher_better
+            )[[1]]
+        }
+```
+
+# Z-Plot & Percentiles
+
+```{r}
+if (custom_population == "Yes") {
+          calculations(
+            population_size = population_size,
+            population_avg = custom_pop_avg,
+            population_variation = custom_pop_sd,
+            individual_score = patient_score,
+            higher_better = higher_better
+            )[[2]]
+        } else {
+          calculations(
+            population_size = population_size,
+            population_avg = tests |> dplyr::filter(Test == test_select) |> dplyr::pull(`Normative Average`),
+            population_variation = tests |> dplyr::filter(Test == test_select) |> dplyr::pull(`Normative Variation`),
+            individual_score = patient_score,
+            higher_better = higher_better
+            )[[2]]
+        }
+```
